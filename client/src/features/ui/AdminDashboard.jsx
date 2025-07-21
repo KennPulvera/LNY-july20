@@ -261,44 +261,7 @@ const AdminDashboard = () => {
     setPatients(prev => ({ ...prev }));
   };
   
-  // Commented out unused function
-  // const deleteEntireBooking = (bookingIndex) => {
-  //   const booking = patients.assessments[bookingIndex];
-  //   
-  //   showConfirmationDialog(
-  //     'delete',
-  //     'Delete Entire Booking',
-  //     'Are you sure you want to delete this entire booking? Assessment and payment information will be permanently removed.',
-  //     booking,
-  //     () => {
-  //       const updatedBookings = [...patients.assessments];
-  //       updatedBookings.splice(bookingIndex, 1);
-  //       
-  //       // Update localStorage
-  //       localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
-  //       
-  //       // Update state with a force refresh
-  //       setPatients(prev => {
-  //         // Make a completely new object to ensure React detects the change
-  //         return {
-  //           ...prev,
-  //           assessments: [...updatedBookings]
-  //         };
-  //       });
-  //       
-  //       // Explicitly call refresh to update stats
-  //       setTimeout(() => refreshStats(), 50);
-  //       
-  //       // Close modals if open
-  //       if (selectedBooking && patients.assessments.findIndex(b => b === selectedBooking) === bookingIndex) {
-  //         closeBookingDetails();
-  //       }
-  //       if (selectedPayment && patients.assessments.findIndex(b => b === selectedPayment) === bookingIndex) {
-  //         closePaymentDetails();
-  //       }
-  //     }
-  //   );
-  // };
+  // Removed unused deleteEntireBooking function to fix ESLint error
 
   const markBookingDone = (bookingIndex) => {
     const booking = patients.assessments[bookingIndex];

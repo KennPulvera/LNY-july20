@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 import '../../admin-styles.css';
 import FloatingElements from './FloatingElements';
 import Header from './Header';
@@ -99,13 +101,25 @@ const AdminDashboard = () => {
     navigate('/'); // Redirect to main page
   }, [navigate]);
 
-  const loadPatientData = () => {
-    // Load patient data from localStorage or API
-    const storedBookings = JSON.parse(localStorage.getItem('assessmentBookings') || '[]');
-    setPatients(prev => ({
-      ...prev,
-      assessments: storedBookings
-    }));
+  const loadPatientData = async () => {
+    try {
+      // Fetch bookings from API
+      const response = await axios.get(`${API_BASE_URL}/api/bookings`);
+      if (response.data.success) {
+        setPatients(prev => ({
+          ...prev,
+          assessments: response.data.data || []
+        }));
+      }
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+      // Fallback to localStorage for offline mode
+      const storedBookings = JSON.parse(localStorage.getItem('assessmentBookings') || '[]');
+      setPatients(prev => ({
+        ...prev,
+        assessments: storedBookings
+      }));
+    }
   };
 
   // Helper function to show confirmation modal
@@ -265,26 +279,39 @@ const AdminDashboard = () => {
       'Mark as Completed',
       'Are you sure you want to mark this appointment as completed?',
       booking,
-      () => {
-        const updatedBookings = [...patients.assessments];
-        updatedBookings[bookingIndex] = {
-          ...updatedBookings[bookingIndex],
-          status: 'completed',
-          completedAt: new Date().toISOString()
-        };
-        
-        // Update localStorage
-        localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
-        
-        // Update state
-        setPatients(prev => ({
-          ...prev,
-          assessments: updatedBookings
-        }));
-        
-        // Close modal if it's the current booking
-        if (selectedBooking && patients.assessments.findIndex(b => b === selectedBooking) === bookingIndex) {
-          closeBookingDetails();
+      async () => {
+        try {
+          // Update booking status via API
+          const response = await axios.patch(`${API_BASE_URL}/api/bookings/${booking._id}/status`, {
+            status: 'completed'
+          });
+          
+          if (response.data.success) {
+            // Reload data from API
+            await loadPatientData();
+            
+            // Close modal if it's the current booking
+            if (selectedBooking && selectedBooking._id === booking._id) {
+              closeBookingDetails();
+            }
+          }
+        } catch (error) {
+          console.error('Error marking booking as done:', error);
+          alert('Error updating booking status. Please try again.');
+          
+          // Fallback to localStorage update
+          const updatedBookings = [...patients.assessments];
+          updatedBookings[bookingIndex] = {
+            ...updatedBookings[bookingIndex],
+            status: 'completed',
+            completedAt: new Date().toISOString()
+          };
+          
+          localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
+          setPatients(prev => ({
+            ...prev,
+            assessments: updatedBookings
+          }));
         }
       }
     );
@@ -298,26 +325,40 @@ const AdminDashboard = () => {
       'Verify Payment',
       'Are you sure you want to mark this payment as verified?',
       booking,
-      () => {
-        const updatedBookings = [...patients.assessments];
-        updatedBookings[bookingIndex] = {
-          ...updatedBookings[bookingIndex],
-          paymentStatus: 'verified',
-          verifiedAt: new Date().toISOString()
-        };
-        
-        // Update localStorage
-        localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
-        
-        // Update state
-        setPatients(prev => ({
-          ...prev,
-          assessments: updatedBookings
-        }));
-        
-        // Close modal if it's the current booking
-        if (selectedBooking && patients.assessments.findIndex(b => b === selectedBooking) === bookingIndex) {
-          closeBookingDetails();
+      async () => {
+        try {
+          // Update payment status via API
+          const response = await axios.patch(`${API_BASE_URL}/api/bookings/${booking._id}/payment`, {
+            paymentStatus: 'paid',
+            paymentDate: new Date().toISOString()
+          });
+          
+          if (response.data.success) {
+            // Reload data from API
+            await loadPatientData();
+            
+            // Close modal if it's the current booking
+            if (selectedBooking && selectedBooking._id === booking._id) {
+              closeBookingDetails();
+            }
+          }
+        } catch (error) {
+          console.error('Error verifying payment:', error);
+          alert('Error verifying payment. Please try again.');
+          
+          // Fallback to localStorage update
+          const updatedBookings = [...patients.assessments];
+          updatedBookings[bookingIndex] = {
+            ...updatedBookings[bookingIndex],
+            paymentStatus: 'paid',
+            verifiedAt: new Date().toISOString()
+          };
+          
+          localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
+          setPatients(prev => ({
+            ...prev,
+            assessments: updatedBookings
+          }));
         }
       }
     );

@@ -24,7 +24,6 @@ const ServicesSection = ({ onBookClick }) => {
       category: 'Emotional Regulation',
       description: 'ABA principles and positive reinforcement for appropriate behaviors and social skills.',
       benefits: ['Behavior management', 'Social skills', 'Emotional regulation', 'Family support'],
-      sessions: '3-4x/week',
       accent: '#ffab40'
     },
     {
@@ -33,7 +32,6 @@ const ServicesSection = ({ onBookClick }) => {
       category: 'Ages 0-3',
       description: 'Family-centered services for infants and toddlers with developmental delays.',
       benefits: ['Family support', 'Milestone tracking', 'Individual plans', 'Parent education'],
-      sessions: '2x/week',
       accent: '#ffc107'
     }
   ];

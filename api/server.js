@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 // CORS Configuration for production
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL || 'https://your-netlify-app-name.netlify.app'
+    ? process.env.FRONTEND_URL || 'https://lyks.netlify.app'
     : 'http://localhost:3000',
   credentials: true,
   optionsSuccessStatus: 200

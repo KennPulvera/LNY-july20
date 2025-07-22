@@ -42,7 +42,7 @@ NODE_ENV=production
 JWT_SECRET=your_super_secure_jwt_secret_key_for_production_2024_change_this
 ADMIN_EMAIL=test@gmail.com
 ADMIN_PASSWORD=admin123
-FRONTEND_URL=https://your-netlify-app-name.netlify.app
+FRONTEND_URL=https://lyks.netlify.app
 ```
 
 ⚠️ **IMPORTANT**: Change the JWT_SECRET to a secure random string!
@@ -75,7 +75,7 @@ FRONTEND_URL=https://your-netlify-app-name.netlify.app
 ### 2.4 Set Environment Variables (if needed)
 In Netlify dashboard, go to Site settings → Environment variables:
 ```
-REACT_APP_API_URL=https://your-render-url.onrender.com
+REACT_APP_API_URL=https://lanceyurinaga.onrender.com
 ```
 
 ### 2.5 Deploy

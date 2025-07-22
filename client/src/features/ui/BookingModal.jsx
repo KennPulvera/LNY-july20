@@ -212,12 +212,45 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
     setHasUnsavedChanges(false);
   };
 
+  const validateTimeSlotAvailability = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/bookings/availability/${formData.appointmentDate}?branch=${formData.branchLocation}`);
+      if (response.data.success) {
+        const availableSlots = response.data.availableSlots;
+        return availableSlots.includes(formData.selectedTime);
+      }
+      return false;
+    } catch (error) {
+      console.error('Error checking time slot availability:', error);
+      return false; // Assume unavailable if check fails
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
+      // Pre-submission validation: Check if selected time slot is still available
+      const isTimeSlotAvailable = await validateTimeSlotAvailability();
+      
+      if (!isTimeSlotAvailable) {
+        setError('⚠️ The selected time slot is no longer available. Please choose a different time.');
+        
+        // Refresh time slots to show current availability
+        await loadTimeSlots(formData.appointmentDate);
+        
+        // Clear the selected time to force user to pick again
+        setFormData(prev => ({
+          ...prev,
+          selectedTime: ''
+        }));
+        
+        setLoading(false);
+        return;
+      }
+
       // Add calculated age and user email to form data
       const submissionData = {
         ...formData,
@@ -248,7 +281,22 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
         window.location.href = '/payment';
       }
     } catch (error) {
-      setError(error.response?.data?.message || 'An error occurred. Please try again.');
+      const errorMessage = error.response?.data?.message || 'An error occurred. Please try again.';
+      
+      // Special handling for double-booking error
+      if (error.response?.status === 409) {
+        setError('⚠️ ' + errorMessage + ' Please refresh the page and select a different time slot.');
+        
+        // Refresh available time slots to show current availability
+        if (formData.appointmentDate && formData.branchLocation) {
+          setTimeout(() => {
+            loadTimeSlots(formData.appointmentDate);
+          }, 1000);
+        }
+      } else {
+        setError(errorMessage);
+      }
+      
       setLoading(false);
     }
   };

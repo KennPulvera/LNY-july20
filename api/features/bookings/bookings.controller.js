@@ -3,6 +3,31 @@ const Booking = require('./bookings.model');
 // Create a new booking
 exports.createBooking = async (req, res) => {
   try {
+    const { appointmentDate, selectedTime, branchLocation } = req.body;
+    
+    // Validate that the time slot is not already booked
+    const existingBooking = await Booking.findOne({
+      appointmentDate: {
+        $gte: new Date(appointmentDate),
+        $lt: new Date(new Date(appointmentDate).getTime() + 24 * 60 * 60 * 1000)
+      },
+      selectedTime: selectedTime,
+      branchLocation: branchLocation,
+      status: { $ne: 'cancelled' } // Exclude cancelled bookings
+    });
+
+    if (existingBooking) {
+      return res.status(409).json({
+        success: false,
+        message: 'This time slot is already booked. Please select a different time.',
+        conflictDetails: {
+          date: appointmentDate,
+          time: selectedTime,
+          branch: branchLocation
+        }
+      });
+    }
+    
     const bookingData = {
       ...req.body,
       user: req.userId // Add user reference from auth middleware
@@ -17,6 +42,14 @@ exports.createBooking = async (req, res) => {
       data: booking
     });
   } catch (error) {
+    // Handle specific MongoDB duplicate key errors
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: 'This time slot is already booked. Please select a different time.'
+      });
+    }
+    
     res.status(400).json({
       success: false,
       message: error.message

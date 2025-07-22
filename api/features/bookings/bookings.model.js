@@ -124,6 +124,23 @@ bookingSchema.pre('save', function(next) {
   next();
 });
 
+// Compound index to prevent double booking for the same time slot
+// This ensures no two active bookings can exist for the same date, time, and branch
+bookingSchema.index(
+  { 
+    appointmentDate: 1, 
+    selectedTime: 1, 
+    branchLocation: 1 
+  },
+  { 
+    unique: true,
+    partialFilterExpression: { 
+      status: { $ne: 'cancelled' } 
+    },
+    name: 'prevent_double_booking'
+  }
+);
+
 // Virtual for formatted date
 bookingSchema.virtual('formattedAppointmentDate').get(function() {
   return this.appointmentDate.toLocaleDateString('en-US', {

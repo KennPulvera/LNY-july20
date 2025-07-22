@@ -33,7 +33,8 @@ const PediatricianSection = () => {
           gap: '50px',
           maxWidth: '1200px',
           margin: '0 auto',
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
+          padding: '0 20px'
         }}>
           {/* Pediatrician Photo */}
           <div className="pediatrician-image" style={{ 
@@ -63,8 +64,7 @@ const PediatricianSection = () => {
                     maxWidth: '100%',
                     height: 'auto',
                     display: 'block',
-                    transition: 'transform 0.3s ease',
-                    minWidth: '500px'
+                    transition: 'transform 0.3s ease'
                   }}
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -98,7 +98,9 @@ const PediatricianSection = () => {
           {/* Pediatrician Information */}
           <div className="pediatrician-info" style={{ 
             flex: '1',
-            minWidth: '300px'
+            minWidth: '280px',
+            maxWidth: '100%',
+            wordWrap: 'break-word'
           }}>
             
             <div className="credentials" style={{ marginBottom: '2rem' }}>

@@ -188,32 +188,42 @@ const AdminDashboard = () => {
     const performDeletion = () => {
       showConfirmationDialog(
         'delete',
-        'Delete Assessment',
-        'Are you sure you want to delete this assessment? Payment information will be kept.',
+        'Delete Booking',
+        'Are you sure you want to permanently delete this booking? This action cannot be undone.',
         booking,
-        () => {
-          const updatedBookings = [...patients.assessments];
-          const booking = updatedBookings[bookingIndex];
-          
-          // Mark as deleted but keep booking in the array
-          updatedBookings[bookingIndex] = {
-            ...booking,
-            assessmentDeleted: true,
-            assessmentDeletedAt: new Date().toISOString()
-          };
-          
-          // Update localStorage
-          localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
-          
-          // Update state
-          setPatients(prev => ({
-            ...prev,
-            assessments: updatedBookings
-          }));
-          
-          // Close modal if open
-          if (selectedBooking && patients.assessments.findIndex(b => b === selectedBooking) === bookingIndex) {
-            closeBookingDetails();
+        async () => {
+          try {
+            // Delete booking from database via API
+            const response = await axios.delete(`${API_BASE_URL}/api/bookings/${booking._id}`);
+            
+            if (response.data.success) {
+              // Reload data from API to refresh the list
+              await loadPatientData();
+              
+              // Close modal if open
+              if (selectedBooking && selectedBooking._id === booking._id) {
+                closeBookingDetails();
+              }
+              
+              alert('Booking deleted successfully');
+            }
+          } catch (error) {
+            console.error('Error deleting booking:', error);
+            alert('Error deleting booking. Please try again.');
+            
+            // Fallback to localStorage update for offline mode
+            const updatedBookings = [...patients.assessments];
+            updatedBookings[bookingIndex] = {
+              ...booking,
+              assessmentDeleted: true,
+              assessmentDeletedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
+            setPatients(prev => ({
+              ...prev,
+              assessments: updatedBookings
+            }));
           }
         }
       );
@@ -228,39 +238,55 @@ const AdminDashboard = () => {
     const performDeletion = () => {
       showConfirmationDialog(
         'delete',
-        'Delete Payment',
-        'Are you sure you want to delete this payment information? Assessment will be kept.',
+        'Clear Payment Information',
+        'Are you sure you want to clear all payment information for this booking? The booking will be kept.',
         booking,
-        () => {
-          const updatedBookings = [...patients.assessments];
-          const booking = updatedBookings[bookingIndex];
-          
-          // Remove payment-specific fields but keep assessment
-          updatedBookings[bookingIndex] = {
-            ...booking,
-            paymentMethod: null,
-            paymentAmount: null,
-            paymentReference: null,
-            accountName: null,
-            paymentDate: null,
-            paymentStatus: null,
-            verifiedAt: null,
-            paymentDeleted: true,
-            paymentDeletedAt: new Date().toISOString()
-          };
-          
-          // Update localStorage
-          localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
-          
-          // Update state
-          setPatients(prev => ({
-            ...prev,
-            assessments: updatedBookings
-          }));
-          
-          // Close modal if open
-          if (selectedPayment && patients.assessments.findIndex(b => b === selectedPayment) === bookingIndex) {
-            closePaymentDetails();
+        async () => {
+          try {
+            // Clear payment information via API
+            const response = await axios.patch(`${API_BASE_URL}/api/bookings/${booking._id}/payment`, {
+              paymentStatus: 'pending',
+              paymentMethod: '',
+              paymentReference: '',
+              paymentDate: null,
+              accountName: ''
+            });
+            
+            if (response.data.success) {
+              // Reload data from API to refresh the list
+              await loadPatientData();
+              
+              // Close modal if open
+              if (selectedPayment && selectedPayment._id === booking._id) {
+                closePaymentDetails();
+              }
+              
+              alert('Payment information cleared successfully');
+            }
+          } catch (error) {
+            console.error('Error clearing payment information:', error);
+            alert('Error clearing payment information. Please try again.');
+            
+            // Fallback to localStorage update for offline mode
+            const updatedBookings = [...patients.assessments];
+            updatedBookings[bookingIndex] = {
+              ...booking,
+              paymentMethod: null,
+              paymentAmount: null,
+              paymentReference: null,
+              accountName: null,
+              paymentDate: null,
+              paymentStatus: 'pending',
+              verifiedAt: null,
+              paymentDeleted: true,
+              paymentDeletedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
+            setPatients(prev => ({
+              ...prev,
+              assessments: updatedBookings
+            }));
           }
         }
       );
@@ -394,31 +420,47 @@ const AdminDashboard = () => {
     if (!date || !selectedBookingForReschedule) return;
     
     try {
-      // Get all bookings for the selected date and branch (excluding current booking)
+      // Get available time slots from API
+      const response = await axios.get(`${API_BASE_URL}/api/bookings/availability/${date}?branch=${selectedBookingForReschedule.branchLocation}`);
+      
+      if (response.data.success) {
+        // Filter out the current booking's time slot since we're rescheduling it
+        const availableSlots = response.data.availableSlots;
+        // Add back the current booking's time slot since it will be freed up
+        const currentTime = selectedBookingForReschedule.selectedTime;
+        if (!availableSlots.includes(currentTime)) {
+          availableSlots.push(currentTime);
+          // Sort the slots to maintain order
+          const allTimeSlots = [
+            '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+            '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
+          ];
+          const sortedAvailable = allTimeSlots.filter(slot => availableSlots.includes(slot));
+          setAvailableTimeSlotsForReschedule(sortedAvailable);
+        } else {
+          setAvailableTimeSlotsForReschedule(availableSlots);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading time slots:', error);
+      // Fallback to local calculation
       const existingBookings = patients.assessments.filter(booking => {
         const bookingDate = new Date(booking.appointmentDate).toDateString();
         const selectedDate = new Date(date).toDateString();
         return bookingDate === selectedDate && 
                booking.branchLocation === selectedBookingForReschedule.branchLocation &&
-               booking !== selectedBookingForReschedule &&
+               booking._id !== selectedBookingForReschedule._id &&
                booking.status !== 'cancelled';
       });
 
-      // Define all available time slots
       const allTimeSlots = [
         '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
         '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
       ];
 
-      // Get booked time slots
       const bookedSlots = existingBookings.map(booking => booking.selectedTime);
-
-      // Return available slots
       const availableSlots = allTimeSlots.filter(slot => !bookedSlots.includes(slot));
       setAvailableTimeSlotsForReschedule(availableSlots);
-    } catch (error) {
-      console.error('Error loading time slots:', error);
-      setAvailableTimeSlotsForReschedule([]);
     }
   };
 
@@ -428,59 +470,65 @@ const AdminDashboard = () => {
       return;
     }
     
-    const performReschedule = () => {
+    const performReschedule = async () => {
       setRescheduleLoading(true);
       
       try {
-        // Find the booking index
-        const bookingIndex = patients.assessments.findIndex(b => b === selectedBookingForReschedule);
-        
-        if (bookingIndex === -1) {
-          throw new Error('Booking not found');
-        }
-
-        // Update the booking in localStorage
-        const updatedBookings = [...patients.assessments];
-        const originalDate = updatedBookings[bookingIndex].appointmentDate;
-        const originalTime = updatedBookings[bookingIndex].selectedTime;
-        
-        updatedBookings[bookingIndex] = {
-          ...updatedBookings[bookingIndex],
+        // Reschedule booking via API
+        const response = await axios.patch(`${API_BASE_URL}/api/bookings/${selectedBookingForReschedule._id}/reschedule`, {
           appointmentDate: rescheduleData.appointmentDate,
           selectedTime: rescheduleData.selectedTime,
           adminNotes: rescheduleData.adminNotes,
-          status: 'scheduled',
-          rescheduledFrom: {
-            originalDate: originalDate,
-            originalTime: originalTime,
-            rescheduledAt: new Date().toISOString(),
-            reason: rescheduleData.reason || 'Admin rescheduled'
-          },
-          updatedAt: new Date().toISOString()
-        };
+          reason: rescheduleData.reason || 'Admin rescheduled'
+        });
 
-        // Update localStorage
-        localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
-
-        // Update state
-        setPatients(prev => ({
-          ...prev,
-          assessments: updatedBookings
-        }));
-
-        // Show success message using alert since we're already in the modal
-        alert(`Booking successfully rescheduled from ${new Date(originalDate).toLocaleDateString()} at ${originalTime} to ${new Date(rescheduleData.appointmentDate).toLocaleDateString()} at ${rescheduleData.selectedTime}`);
-        
-        closeRescheduleModal();
-        
-        // Close booking details modal if open
-        if (selectedBooking === selectedBookingForReschedule) {
-          closeBookingDetails();
+        if (response.data.success) {
+          // Reload data from API to refresh the list
+          await loadPatientData();
+          
+          // Show success message
+          alert(`Booking successfully rescheduled to ${new Date(rescheduleData.appointmentDate).toLocaleDateString()} at ${rescheduleData.selectedTime}`);
+          
+          closeRescheduleModal();
+          
+          // Close booking details modal if open
+          if (selectedBooking && selectedBooking._id === selectedBookingForReschedule._id) {
+            closeBookingDetails();
+          }
         }
-
       } catch (error) {
         console.error('Error rescheduling booking:', error);
         alert('Error rescheduling booking. Please try again.');
+        
+        // Fallback to localStorage update for offline mode
+        const bookingIndex = patients.assessments.findIndex(b => b._id === selectedBookingForReschedule._id);
+        
+        if (bookingIndex !== -1) {
+          const updatedBookings = [...patients.assessments];
+          const originalDate = updatedBookings[bookingIndex].appointmentDate;
+          const originalTime = updatedBookings[bookingIndex].selectedTime;
+          
+          updatedBookings[bookingIndex] = {
+            ...updatedBookings[bookingIndex],
+            appointmentDate: rescheduleData.appointmentDate,
+            selectedTime: rescheduleData.selectedTime,
+            adminNotes: rescheduleData.adminNotes,
+            status: 'scheduled',
+            rescheduledFrom: {
+              originalDate: originalDate,
+              originalTime: originalTime,
+              rescheduledAt: new Date().toISOString(),
+              reason: rescheduleData.reason || 'Admin rescheduled'
+            },
+            updatedAt: new Date().toISOString()
+          };
+
+          localStorage.setItem('assessmentBookings', JSON.stringify(updatedBookings));
+          setPatients(prev => ({
+            ...prev,
+            assessments: updatedBookings
+          }));
+        }
       } finally {
         setRescheduleLoading(false);
       }
@@ -706,7 +754,7 @@ const AdminDashboard = () => {
                             </td>
                             <td>
                               <div className="appointment-info">
-                                Date: {patient.appointmentDate}<br />
+                                Date: {new Date(patient.appointmentDate).toLocaleDateString()}<br />
                                 Time: {patient.selectedTime}
                                 {patient.rescheduledFrom && (
                                   <div className="rescheduled-badge">
@@ -744,9 +792,9 @@ const AdminDashboard = () => {
                                   </>
                                 )}
                                 <button 
-                                  className="btn-action delete-booking" 
-                                  onClick={() => deleteAssessment(originalIndex)}
-                                  title="Delete assessment"
+                                                        className="btn-action delete-booking"
+                      onClick={() => deleteAssessment(originalIndex)}
+                      title="Delete entire booking"
                                 >
                                   <i className="fas fa-trash"></i>
                                 </button>
@@ -824,7 +872,7 @@ const AdminDashboard = () => {
                                     <strong>Amount:</strong> ₱{patient.paymentAmount ? patient.paymentAmount.toLocaleString() : '2,000'}<br />
                                     <strong>Reference:</strong> {patient.paymentReference || 'N/A'}<br />
                                     <strong>Account:</strong> {patient.accountName || 'N/A'}<br />
-                                    <strong>Date:</strong> {patient.paymentDate || 'N/A'}
+                                    <strong>Date:</strong> {patient.paymentDate ? new Date(patient.paymentDate).toLocaleDateString() : 'N/A'}
                                   </>
                                 ) : (
                                   <span className="no-payment-info">No payment information provided</span>
@@ -866,9 +914,9 @@ const AdminDashboard = () => {
                                   </button>
                                 )}
                                 <button 
-                                  className="btn-action delete-booking" 
-                                  onClick={() => deletePayment(originalIndex)}
-                                  title="Delete payment"
+                                                        className="btn-action delete-booking"
+                      onClick={() => deletePayment(originalIndex)}
+                      title="Clear payment information"
                                 >
                                   <i className="fas fa-trash"></i>
                                 </button>
@@ -948,7 +996,7 @@ const AdminDashboard = () => {
                 <div className="detail-section">
                   <h3>📅 Appointment Information</h3>
                   <div className="detail-item">
-                    <strong>Date:</strong> {selectedBooking.appointmentDate}
+                    <strong>Date:</strong> {new Date(selectedBooking.appointmentDate).toLocaleDateString()}
                   </div>
                   <div className="detail-item">
                     <strong>Time:</strong> {selectedBooking.selectedTime}
@@ -988,7 +1036,7 @@ const AdminDashboard = () => {
                     <strong>Account Name:</strong> <span className="account-display">{selectedBooking.accountName || 'Not provided'}</span>
                   </div>
                   <div className="detail-item">
-                    <strong>Payment Date:</strong> <span className="date-display">{selectedBooking.paymentDate || 'Not provided'}</span>
+                    <strong>Payment Date:</strong> <span className="date-display">{selectedBooking.paymentDate ? new Date(selectedBooking.paymentDate).toLocaleDateString() : 'Not provided'}</span>
                   </div>
                   <div className="detail-item">
                     <strong>Payment Status:</strong> 
@@ -1058,7 +1106,7 @@ const AdminDashboard = () => {
                   className="btn-delete-booking-modal" 
                   onClick={() => deleteAssessment(patients.assessments.findIndex(b => b === selectedBooking))}
                 >
-                  <i className="fas fa-trash"></i> Delete Assessment
+                                        <i className="fas fa-trash"></i> Delete Booking
                 </button>
                 <button className="btn-close-details" onClick={closeBookingDetails}>
                   Close
@@ -1117,7 +1165,7 @@ const AdminDashboard = () => {
                     <strong>Account Name:</strong> <span className="account-display">{selectedPayment.accountName || 'Not provided'}</span>
                   </div>
                   <div className="detail-item">
-                    <strong>Payment Date:</strong> <span className="date-display">{selectedPayment.paymentDate || 'Not provided'}</span>
+                    <strong>Payment Date:</strong> <span className="date-display">{selectedPayment.paymentDate ? new Date(selectedPayment.paymentDate).toLocaleDateString() : 'Not provided'}</span>
                   </div>
                   
                   <div className="detail-item">
@@ -1146,7 +1194,7 @@ const AdminDashboard = () => {
                    className="btn-delete-booking-modal" 
                    onClick={() => deletePayment(patients.assessments.findIndex(b => b === selectedPayment))}
                  >
-                   <i className="fas fa-trash"></i> Delete Payment
+                                         <i className="fas fa-trash"></i> Clear Payment
                  </button>
                  <button className="btn-close-details" onClick={closePaymentDetails}>
                    Close

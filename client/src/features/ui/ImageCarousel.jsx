@@ -10,6 +10,8 @@ const ImageCarousel = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoplay);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   // Auto-play functionality
   useEffect(() => {
@@ -44,6 +46,37 @@ const ImageCarousel = ({
     setIsAutoPlaying(autoplay);
   };
 
+  // Touch handlers for mobile swipe
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+    setIsAutoPlaying(false);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && currentIndex < images.length - 1) {
+      goToNext();
+    }
+    if (isRightSwipe && currentIndex > 0) {
+      goToPrevious();
+    }
+    
+    // Resume autoplay after a delay
+    setTimeout(() => {
+      setIsAutoPlaying(autoplay);
+    }, 2000);
+  };
+
   if (!images || images.length === 0) {
     return <div className="carousel-placeholder">No images available</div>;
   }
@@ -54,7 +87,12 @@ const ImageCarousel = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="carousel-container">
+      <div 
+        className="carousel-container"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         <div className="carousel-track" style={{
           transform: `translateX(-${currentIndex * 100}%)`
         }}>

@@ -130,7 +130,7 @@ const ServicesSection = ({ onBookClick }) => {
         </div>
 
         {/* Main Content Grid - Fixed Equal Containers */}
-        <div style={{
+        <div className="services-main-grid" style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '40px',
@@ -140,7 +140,7 @@ const ServicesSection = ({ onBookClick }) => {
         }}>
           
           {/* Professional Team */}
-          <div style={{ height: '600px' }}>
+          <div className="services-team-section" style={{ height: '600px' }}>
             <div style={{
               background: 'linear-gradient(135deg, #ff6b35, #ff8a65)',
               color: 'white',
@@ -238,7 +238,7 @@ const ServicesSection = ({ onBookClick }) => {
           </div>
 
           {/* Programs & Services */}
-          <div style={{ height: '600px' }}>
+          <div className="services-programs-section" style={{ height: '600px' }}>
             <div style={{
               background: 'linear-gradient(135deg, #ffab40, #ffc107)',
               color: 'white',

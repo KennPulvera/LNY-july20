@@ -6242,6 +6242,31 @@ body {
         word-wrap: break-word;
     }
     
+    /* Services Section Mobile Fix */
+    .services-main-grid {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important;
+        padding: 0 15px !important;
+    }
+    
+    .services-main-grid > div {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    
+    .services-team-section,
+    .services-programs-section {
+        height: auto !important;
+        min-height: 500px !important;
+    }
+    
+    .services-team-section > div:last-child,
+    .services-programs-section > div:last-child {
+        height: auto !important;
+        min-height: 430px !important;
+        overflow-y: visible !important;
+    }
+    
     /* Image responsiveness improvements */
     img {
         max-width: 100% !important;
@@ -6692,24 +6717,63 @@ body {
     height: 200px;
   }
   
+  /* Mobile carousel improvements */
+  .carousel-track {
+    touch-action: pan-x;
+    will-change: transform;
+  }
+  
+  /* Always show arrows on mobile for better usability */
   .carousel-arrow {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
+    opacity: 0.8 !important;
+    pointer-events: auto !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  .carousel-arrow:active {
+    transform: translateY(-50%) scale(0.95);
+    background: var(--primary-orange) !important;
+  }
+  
+  .carousel-arrow i {
+    color: var(--primary-orange);
+    font-size: 1.1rem;
+  }
+  
+  .carousel-arrow:active i {
+    color: white;
   }
   
   .carousel-arrow-left {
-    left: 10px;
+    left: 15px;
   }
   
   .carousel-arrow-right {
-    right: 10px;
+    right: 15px;
+  }
+  
+  /* Larger dots for mobile touch */
+  .carousel-dot {
+    width: 14px;
+    height: 14px;
+    margin: 0 6px;
+    border-width: 3px;
+  }
+  
+  .carousel-dots {
+    bottom: 15px;
+    gap: 8px;
   }
   
   .carousel-counter {
-    top: 10px;
-    right: 10px;
-    font-size: 0.8rem;
-    padding: 6px 12px;
+    top: 15px;
+    right: 15px;
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    background: rgba(0, 0, 0, 0.8);
   }
   
   .carousel-caption {
@@ -6718,6 +6782,23 @@ body {
   
   .carousel-caption p {
     font-size: 1rem;
+  }
+  
+  /* Image container mobile optimizations */
+  .carousel-image {
+    object-fit: cover;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  
+  /* Disable hover effects on mobile */
+  .carousel-slide:hover .carousel-image {
+    transform: none;
+  }
+  
+  .carousel-slide:hover .carousel-caption {
+    transform: translateY(100%);
   }
 }
 
@@ -6732,21 +6813,55 @@ body {
   }
   
   .carousel-arrow {
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
   
   .carousel-arrow i {
     font-size: 1rem;
   }
   
+  .carousel-arrow-left {
+    left: 10px;
+  }
+  
+  .carousel-arrow-right {
+    right: 10px;
+  }
+  
   .carousel-dot {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
+    border-width: 2px;
   }
   
   .carousel-dots {
-    gap: 8px;
+    gap: 6px;
+    bottom: 10px;
+  }
+  
+  .carousel-counter {
+    top: 10px;
+    right: 10px;
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+  
+  /* Services section mobile improvements */
+  .services-main-grid {
+    padding: 0 10px !important;
+    gap: 20px !important;
+  }
+  
+  /* Enhanced slider mobile */
+  .enhanced-slider-section {
+    padding: 60px 0 !important;
+  }
+  
+  .enhanced-slider-section .container {
+    padding: 0 15px;
   }
 }
 

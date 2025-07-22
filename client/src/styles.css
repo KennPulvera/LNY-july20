@@ -6881,3 +6881,322 @@ body {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ================================
+   COMPREHENSIVE MOBILE RESPONSIVE STYLES
+   ================================ */
+
+/* Base Mobile Layout Improvements */
+@media (max-width: 768px) {
+  /* Container Improvements */
+  .container {
+    padding: 0 16px;
+    max-width: 100%;
+  }
+  
+  /* Navigation Mobile Fixes */
+  .nav-container {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+  }
+  
+  .nav-controls {
+    gap: 12px;
+  }
+  
+  .nav-btn-external {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  /* Hero Section Mobile */
+  .hero-section {
+    padding: 120px 0 60px;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.2rem;
+    line-height: 1.3;
+  }
+  
+  .hero-content .subtitle {
+    font-size: 1.1rem;
+    margin: 1rem 0;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    max-width: 280px;
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+  
+  /* Form Mobile Improvements */
+  .auth-modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 20px auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .booking-modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 10px auto;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-group {
+    width: 100%;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 12px 16px;
+  }
+  
+  /* Time Slots Mobile */
+  .time-slots-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 8px;
+  }
+  
+  .time-slot {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  /* Services Section Mobile */
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .service-card {
+    margin: 0 16px;
+  }
+  
+  /* About Section Mobile */
+  .about-content {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .about-text {
+    max-width: 100%;
+  }
+  
+  /* Contact Section Mobile */
+  .contact-info {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .contact-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  /* CTA Section Mobile */
+  .cta-content {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  /* Footer Mobile */
+  .footer-content {
+    flex-direction: column;
+    gap: 30px;
+    text-align: center;
+  }
+  
+  .footer-section {
+    flex: none;
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+  /* Typography Scaling */
+  .hero-content h1 {
+    font-size: 1.8rem;
+  }
+  
+  .hero-content .subtitle {
+    font-size: 1rem;
+  }
+  
+  /* Section Headings */
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+  }
+  
+  /* Container Extra Small */
+  .container {
+    padding: 0 12px;
+  }
+  
+  /* Modal Content */
+  .auth-modal-content {
+    width: 98%;
+    margin: 10px auto;
+    border-radius: 12px;
+  }
+  
+  .auth-modal-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  /* Time Slots Very Small */
+  .time-slot {
+    padding: 10px 6px;
+    font-size: 12px;
+  }
+  
+  /* Service Cards */
+  .service-card {
+    margin: 0 12px;
+    padding: 20px 16px;
+  }
+  
+  .service-card h3 {
+    font-size: 1.2rem;
+  }
+  
+  /* Contact Items */
+  .contact-item {
+    padding: 16px;
+  }
+  
+  /* Buttons */
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Extra Small Mobile (320px) */
+@media (max-width: 320px) {
+  .container {
+    padding: 0 8px;
+  }
+  
+  .hero-content h1 {
+    font-size: 1.6rem;
+  }
+  
+  .auth-modal-content {
+    width: 99%;
+    margin: 5px auto;
+  }
+  
+  .time-slots-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .service-card {
+    margin: 0 8px;
+  }
+}
+
+/* ================================
+   MOBILE TOUCH AND INTERACTION IMPROVEMENTS
+   ================================ */
+
+/* Touch-friendly interactions for mobile */
+@media (max-width: 768px) {
+  /* Improve touch targets */
+  button,
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .time-slot,
+  .nav-btn,
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px; /* iOS recommended touch target */
+    min-width: 44px;
+  }
+  
+  /* Better tap highlights */
+  button,
+  .btn,
+  .time-slot,
+  .service-card,
+  .contact-item {
+    -webkit-tap-highlight-color: rgba(255, 107, 53, 0.3);
+  }
+  
+  /* Prevent zoom on input focus (iOS) */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="date"],
+  input[type="time"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Smooth scrolling for mobile */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Better modal handling on mobile */
+  .auth-modal,
+  .booking-details-modal,
+  .confirmation-modal {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Improve text selection on mobile */
+  .time-slot,
+  .btn,
+  button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Better focus states for accessibility */
+  button:focus,
+  .btn:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--primary-orange);
+    outline-offset: 2px;
+  }
+}

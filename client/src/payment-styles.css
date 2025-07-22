@@ -2974,4 +2974,369 @@
 
 .input-with-icon input {
   padding-left: 30px;
+}
+
+/* ================================
+   COMPREHENSIVE MOBILE RESPONSIVE STYLES FOR PAYMENT
+   ================================ */
+
+/* Enhanced Mobile Payment Styles */
+@media (max-width: 768px) {
+  /* Payment Container */
+  .payment-container {
+    padding: 80px 12px 40px;
+    min-height: 100vh;
+  }
+  
+  /* Payment Header */
+  .payment-header,
+  .payment-header-compact {
+    padding: 16px;
+    margin: 0 8px 20px;
+    border-radius: 16px;
+  }
+  
+  .title-summary-row {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .payment-title h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  
+  .payment-title p {
+    font-size: 1rem;
+    text-align: center;
+  }
+  
+  /* Booking Summary */
+  .booking-summary-compact {
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .summary-card {
+    padding: 16px;
+  }
+  
+  .summary-item {
+    font-size: 0.9rem;
+  }
+  
+  /* Payment Methods */
+  .payment-methods {
+    margin: 0 8px;
+    gap: 16px;
+  }
+  
+  .payment-method {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px;
+  }
+  
+  .payment-method .method-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+  }
+  
+  .payment-method h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  
+  .payment-method p {
+    font-size: 0.9rem;
+  }
+  
+  /* QR Code Section */
+  .qr-and-details {
+    flex-direction: column;
+    gap: 20px;
+    margin: 0 8px;
+  }
+  
+  .qr-code-section-compact {
+    align-self: center;
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .qr-code-container img {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .qr-instructions {
+    padding: 16px;
+  }
+  
+  .qr-instructions ol {
+    font-size: 0.9rem;
+  }
+  
+  /* Payment Details */
+  .payment-details-compact {
+    width: 100%;
+  }
+  
+  .account-details {
+    padding: 16px;
+  }
+  
+  .account-item {
+    padding: 12px 0;
+    font-size: 0.9rem;
+  }
+  
+  .account-label {
+    font-size: 0.85rem;
+  }
+  
+  .account-value {
+    font-size: 1rem;
+  }
+  
+  /* Forms */
+  .payment-form,
+  .confirmation-form {
+    margin: 0 8px;
+    padding: 20px 16px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px 16px;
+    border-radius: 8px;
+  }
+  
+  /* Buttons */
+  .btn-continue,
+  .btn-confirm-payment,
+  .btn-upload-receipt {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    margin: 16px 0;
+  }
+  
+  .btn-back {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+  
+  /* Upload Section */
+  .upload-section {
+    margin: 0 8px;
+    padding: 20px 16px;
+  }
+  
+  .upload-area {
+    padding: 40px 20px;
+  }
+  
+  .upload-area i {
+    font-size: 2.5rem;
+  }
+  
+  .upload-area p {
+    font-size: 0.9rem;
+  }
+  
+  /* Progress Steps */
+  .payment-progress {
+    margin: 0 8px 20px;
+    padding: 16px;
+  }
+  
+  .progress-steps {
+    gap: 8px;
+  }
+  
+  .progress-step {
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.8rem;
+  }
+  
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+  
+  /* Confirmation Details */
+  .booking-confirmation-details {
+    margin: 0 8px;
+    padding: 16px;
+  }
+  
+  .confirmation-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .detail-group {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .detail-group label {
+    font-size: 0.85rem;
+  }
+  
+  .detail-group span {
+    font-size: 0.9rem;
+  }
+  
+  /* Success/Error Messages */
+  .success-container,
+  .error-container {
+    margin: 0 8px;
+    padding: 20px 16px;
+  }
+  
+  .success-content h2,
+  .error-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .success-content p,
+  .error-content p {
+    font-size: 1rem;
+  }
+  
+  /* Navigation Buttons */
+  .payment-navigation {
+    flex-direction: column;
+    gap: 12px;
+    margin: 0 8px;
+    padding: 16px;
+  }
+  
+  /* Show QR Button */
+  .btn-show-qr {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+}
+
+/* Small Mobile Payment */
+@media (max-width: 480px) {
+  .payment-container {
+    padding: 70px 8px 30px;
+  }
+  
+  .payment-header,
+  .payment-header-compact {
+    margin: 0 4px 16px;
+    padding: 12px;
+  }
+  
+  .payment-title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .payment-title p {
+    font-size: 0.9rem;
+  }
+  
+  .payment-methods {
+    margin: 0 4px;
+    gap: 12px;
+  }
+  
+  .payment-method {
+    padding: 16px 12px;
+  }
+  
+  .payment-method .method-icon {
+    font-size: 2rem;
+  }
+  
+  .payment-method h3 {
+    font-size: 1rem;
+  }
+  
+  .qr-and-details {
+    margin: 0 4px;
+  }
+  
+  .qr-code-container img {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .payment-form,
+  .confirmation-form {
+    margin: 0 4px;
+    padding: 16px 12px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 12px;
+  }
+  
+  .btn-continue,
+  .btn-confirm-payment,
+  .btn-upload-receipt {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+  
+  .upload-area {
+    padding: 30px 16px;
+  }
+  
+  .progress-steps {
+    gap: 6px;
+  }
+  
+  .step-circle {
+    width: 25px;
+    height: 25px;
+    font-size: 0.7rem;
+  }
+  
+  .progress-step {
+    font-size: 0.7rem;
+  }
+  
+  .booking-confirmation-details {
+    margin: 0 4px;
+    padding: 12px;
+  }
+  
+  .success-container,
+  .error-container {
+    margin: 0 4px;
+    padding: 16px 12px;
+  }
+  
+  .success-content h2,
+  .error-content h2 {
+    font-size: 1.3rem;
+  }
+  
+  .payment-navigation {
+    margin: 0 4px;
+    padding: 12px;
+  }
 } 

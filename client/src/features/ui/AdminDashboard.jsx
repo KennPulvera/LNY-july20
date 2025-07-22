@@ -15,6 +15,12 @@ const AdminDashboard = () => {
     assessments: []
   });
   
+  // Filter and sort states
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'completed', 'not-completed'
+  const [dateSort, setDateSort] = useState('upcoming'); // 'upcoming', 'recent', 'oldest'
+  const [showTimeSlotView, setShowTimeSlotView] = useState(false);
+  const [selectedDateForSlots, setSelectedDateForSlots] = useState(new Date().toISOString().split('T')[0]);
+  
   // Booking details modal state
   const [isBookingDetailsOpen, setIsBookingDetailsOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -80,6 +86,78 @@ const AdminDashboard = () => {
       loadPatientData();
     }
   }, []);
+
+  // Filter and sort bookings function
+  const getFilteredAndSortedBookings = () => {
+    let filteredBookings = patients.assessments.filter(patient => 
+      patient.branchLocation === selectedBranch && !patient.assessmentDeleted
+    );
+
+    // Apply status filter
+    if (statusFilter === 'completed') {
+      filteredBookings = filteredBookings.filter(patient => patient.status === 'completed');
+    } else if (statusFilter === 'not-completed') {
+      filteredBookings = filteredBookings.filter(patient => patient.status !== 'completed');
+    }
+
+    // Sort bookings
+    filteredBookings.sort((a, b) => {
+      const dateA = new Date(a.appointmentDate);
+      const dateB = new Date(b.appointmentDate);
+      const now = new Date();
+      
+      // First, separate completed and non-completed (completed always go to bottom)
+      if (a.status === 'completed' && b.status !== 'completed') return 1;
+      if (a.status !== 'completed' && b.status === 'completed') return -1;
+      
+      // Then sort by date preference
+      if (dateSort === 'upcoming') {
+        // Show upcoming dates first, then past dates
+        const aIsFuture = dateA >= now;
+        const bIsFuture = dateB >= now;
+        
+        if (aIsFuture && !bIsFuture) return -1;
+        if (!aIsFuture && bIsFuture) return 1;
+        
+        return aIsFuture ? dateA - dateB : dateB - dateA;
+      } else if (dateSort === 'recent') {
+        // Most recent dates first
+        return dateB - dateA;
+      } else if (dateSort === 'oldest') {
+        // Oldest dates first
+        return dateA - dateB;
+      }
+      
+      return 0;
+    });
+
+    return filteredBookings;
+  };
+
+  // Get time slot availability for a specific date
+  const getTimeSlotAvailability = (date) => {
+    const allTimeSlots = [
+      '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+      '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
+    ];
+
+    const bookingsForDate = patients.assessments.filter(booking => {
+      const bookingDate = new Date(booking.appointmentDate).toISOString().split('T')[0];
+      return bookingDate === date && 
+             booking.branchLocation === selectedBranch && 
+             booking.status !== 'cancelled' &&
+             !booking.assessmentDeleted;
+    });
+
+    const bookedSlots = bookingsForDate.map(booking => booking.selectedTime);
+    
+    return allTimeSlots.map(slot => ({
+      time: slot,
+      isBooked: bookedSlots.includes(slot),
+      bookingsCount: bookedSlots.filter(booked => booked === slot).length,
+      bookings: bookingsForDate.filter(booking => booking.selectedTime === slot)
+    }));
+  };
 
   const adminLogin = () => {
     // Simple authentication check
@@ -671,18 +749,34 @@ const AdminDashboard = () => {
             </div>
             
             {/* Quick Stats - With key for forcing refresh */}
-            <div className="quick-stats" key={`stats-${patients.assessments.length}-${selectedBranch}`}>
+            <div className="quick-stats" key={`stats-${patients.assessments.length}-${selectedBranch}-${statusFilter}`}>
               <div className="stat-item">
                 <div className="stat-number" id="branchPendingCount">
-                  {patients.assessments.filter(p => p.branchLocation === selectedBranch).length}
+                  {patients.assessments.filter(p => p.branchLocation === selectedBranch && !p.assessmentDeleted).length}
                 </div>
                 <div className="stat-label">Total Bookings</div>
               </div>
               <div className="stat-item">
-                <div className="stat-number" id="branchVerifiedCount">
-                  {patients.assessments.filter(p => p.branchLocation === selectedBranch && p.paymentStatus === 'verified').length}
+                <div className="stat-number" id="branchCompletedCount">
+                  {patients.assessments.filter(p => p.branchLocation === selectedBranch && !p.assessmentDeleted && p.status === 'completed').length}
                 </div>
-                <div className="stat-label">Verified Payments</div>
+                <div className="stat-label">Completed</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-number" id="branchPendingCount">
+                  {patients.assessments.filter(p => p.branchLocation === selectedBranch && !p.assessmentDeleted && p.status !== 'completed').length}
+                </div>
+                <div className="stat-label">Pending</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-number" id="filteredCount">
+                  {getFilteredAndSortedBookings().length}
+                </div>
+                <div className="stat-label">
+                  {statusFilter === 'all' ? 'Showing All' :
+                   statusFilter === 'completed' ? 'Showing Completed' :
+                   'Showing Pending'}
+                </div>
               </div>
             </div>
           </div>
@@ -722,6 +816,90 @@ const AdminDashboard = () => {
                     <span>Patients who booked assessments from the website</span>
                   </div>
                 </div>
+                
+                {/* Filter and Sort Controls */}
+                <div className="booking-controls">
+                  <div className="filter-section">
+                    <div className="filter-group">
+                      <label>Status Filter:</label>
+                      <select 
+                        value={statusFilter} 
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="filter-select"
+                      >
+                        <option value="all">All Bookings</option>
+                        <option value="not-completed">Not Completed</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                    </div>
+                    
+                    <div className="filter-group">
+                      <label>Sort by Date:</label>
+                      <select 
+                        value={dateSort} 
+                        onChange={(e) => setDateSort(e.target.value)}
+                        className="filter-select"
+                      >
+                        <option value="upcoming">Upcoming First</option>
+                        <option value="recent">Most Recent</option>
+                        <option value="oldest">Oldest First</option>
+                      </select>
+                    </div>
+                    
+                    <div className="filter-group">
+                      <button 
+                        className={`btn-time-slots ${showTimeSlotView ? 'active' : ''}`}
+                        onClick={() => setShowTimeSlotView(!showTimeSlotView)}
+                      >
+                        <i className="fas fa-clock"></i> Time Slots
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Time Slot Availability View */}
+                  {showTimeSlotView && (
+                    <div className="time-slot-availability">
+                      <div className="slot-date-picker">
+                        <label>View availability for:</label>
+                        <input 
+                          type="date" 
+                          value={selectedDateForSlots}
+                          onChange={(e) => setSelectedDateForSlots(e.target.value)}
+                          className="date-input"
+                        />
+                      </div>
+                      
+                      <div className="time-slots-grid">
+                        {getTimeSlotAvailability(selectedDateForSlots).map((slot, index) => (
+                          <div 
+                            key={index} 
+                            className={`time-slot-info ${slot.isBooked ? 'booked' : 'available'}`}
+                          >
+                            <div className="slot-time">{slot.time}</div>
+                            <div className="slot-status">
+                              {slot.isBooked ? (
+                                <>
+                                  <span className="booked-badge">
+                                    <i className="fas fa-user"></i> {slot.bookingsCount} Booked
+                                  </span>
+                                  {slot.bookings.map((booking, i) => (
+                                    <div key={i} className="slot-booking-info">
+                                      {booking.childName} ({booking.guardianName})
+                                    </div>
+                                  ))}
+                                </>
+                              ) : (
+                                <span className="available-badge">
+                                  <i className="fas fa-check"></i> Available
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="table-wrapper table-wrapper-enhanced">
@@ -735,8 +913,7 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {patients.assessments
-                      .filter(patient => patient.branchLocation === selectedBranch && !patient.assessmentDeleted)
+                    {getFilteredAndSortedBookings()
                       .map((patient, index) => {
                         const originalIndex = patients.assessments.findIndex(p => p === patient);
                         const isCompleted = patient.status === 'completed';
@@ -812,9 +989,13 @@ const AdminDashboard = () => {
                   </tbody>
                 </table>
                 
-                {patients.assessments.filter(p => p.branchLocation === selectedBranch && !p.assessmentDeleted).length === 0 && (
+                {getFilteredAndSortedBookings().length === 0 && (
                   <div className="empty-state">
-                    <p>No assessment bookings for this branch yet.</p>
+                    <p>
+                      {statusFilter === 'completed' ? 'No completed bookings found.' :
+                       statusFilter === 'not-completed' ? 'No pending bookings found.' :
+                       'No assessment bookings for this branch yet.'}
+                    </p>
                   </div>
                 )}
               </div>

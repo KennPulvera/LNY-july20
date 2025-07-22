@@ -3222,3 +3222,111 @@
   border-color: #bbb;
   color: #444;
 }
+
+/* Reschedule History Styles */
+.reschedule-history {
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #fff5f0 100%);
+  border-radius: 12px;
+  border: 2px solid rgba(255, 107, 53, 0.1);
+}
+
+.reschedule-history h4 {
+  color: var(--primary-orange);
+  margin-bottom: 15px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reschedule-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.reschedule-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  border-left: 4px solid var(--primary-orange);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.reschedule-entry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.reschedule-index {
+  background: var(--primary-orange);
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.reschedule-details {
+  flex: 1;
+}
+
+.reschedule-details .detail-item {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.reschedule-details .detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.reschedule-by {
+  background: rgba(255, 107, 53, 0.1);
+  color: var(--primary-orange);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.reschedule-reason {
+  font-style: italic;
+  color: #666;
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Updated Rescheduled Badge in Booking List */
+.rescheduled-badge {
+  background: linear-gradient(135deg, #ff6b35, #ff8a50);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
+}
+
+.rescheduled-badge small {
+  display: block;
+  font-size: 10px;
+  opacity: 0.9;
+  margin-top: 2px;
+  font-weight: 400;
+}

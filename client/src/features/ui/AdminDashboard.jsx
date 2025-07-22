@@ -486,8 +486,13 @@ const AdminDashboard = () => {
           // Reload data from API to refresh the list
           await loadPatientData();
           
-          // Show success message
-          alert(`Booking successfully rescheduled to ${new Date(rescheduleData.appointmentDate).toLocaleDateString()} at ${rescheduleData.selectedTime}`);
+          // Show success message with old and new dates
+          const oldDate = new Date(selectedBookingForReschedule.appointmentDate).toLocaleDateString();
+          const oldTime = selectedBookingForReschedule.selectedTime;
+          const newDate = new Date(rescheduleData.appointmentDate).toLocaleDateString();
+          const newTime = rescheduleData.selectedTime;
+          
+          alert(`✅ Booking Rescheduled Successfully!\n\n📅 FROM: ${oldDate} at ${oldTime}\n📅 TO: ${newDate} at ${newTime}\n\nThe patient will be notified of the schedule change.`);
           
           closeRescheduleModal();
           
@@ -756,9 +761,10 @@ const AdminDashboard = () => {
                               <div className="appointment-info">
                                 Date: {new Date(patient.appointmentDate).toLocaleDateString()}<br />
                                 Time: {patient.selectedTime}
-                                {patient.rescheduledFrom && (
+                                {patient.rescheduleHistory && patient.rescheduleHistory.length > 0 && (
                                   <div className="rescheduled-badge">
-                                    🔄 Rescheduled from {new Date(patient.rescheduledFrom.originalDate).toLocaleDateString()}
+                                    🔄 Rescheduled {patient.rescheduleHistory.length} time{patient.rescheduleHistory.length > 1 ? 's' : ''} 
+                                    <small>(Originally: {new Date(patient.rescheduleHistory[0].fromDate).toLocaleDateString()})</small>
                                   </div>
                                 )}
                                 {isCompleted && <div className="completed-date">Completed: {new Date(patient.completedAt).toLocaleDateString()}</div>}
@@ -1065,20 +1071,35 @@ const AdminDashboard = () => {
                       <strong>Completed:</strong> {new Date(selectedBooking.completedAt).toLocaleString()}
                     </div>
                   )}
-                  {selectedBooking.rescheduledFrom && (
+                  {selectedBooking.rescheduleHistory && selectedBooking.rescheduleHistory.length > 0 && (
                     <div className="detail-section reschedule-history">
-                      <h4>🔄 Reschedule History</h4>
-                      <div className="detail-item">
-                        <strong>Originally Scheduled:</strong> {new Date(selectedBooking.rescheduledFrom.originalDate).toLocaleDateString()} at {selectedBooking.rescheduledFrom.originalTime}
+                      <h4>🔄 Reschedule History ({selectedBooking.rescheduleHistory.length} time{selectedBooking.rescheduleHistory.length > 1 ? 's' : ''})</h4>
+                      <div className="reschedule-timeline">
+                        {selectedBooking.rescheduleHistory.map((reschedule, index) => (
+                          <div key={index} className="reschedule-entry">
+                            <div className="reschedule-index">#{selectedBooking.rescheduleHistory.length - index}</div>
+                            <div className="reschedule-details">
+                              <div className="detail-item">
+                                <strong>From:</strong> {new Date(reschedule.fromDate).toLocaleDateString()} at {reschedule.fromTime}
+                              </div>
+                              <div className="detail-item">
+                                <strong>To:</strong> {new Date(reschedule.toDate).toLocaleDateString()} at {reschedule.toTime}
+                              </div>
+                              <div className="detail-item">
+                                <strong>Rescheduled On:</strong> {new Date(reschedule.rescheduledAt).toLocaleString()}
+                              </div>
+                              <div className="detail-item">
+                                <strong>By:</strong> <span className="reschedule-by">{reschedule.rescheduledBy || 'admin'}</span>
+                              </div>
+                              {reschedule.reason && (
+                                <div className="detail-item">
+                                  <strong>Reason:</strong> <span className="reschedule-reason">{reschedule.reason}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div className="detail-item">
-                        <strong>Rescheduled On:</strong> {new Date(selectedBooking.rescheduledFrom.rescheduledAt).toLocaleString()}
-                      </div>
-                      {selectedBooking.rescheduledFrom.reason && (
-                        <div className="detail-item">
-                          <strong>Reason:</strong> {selectedBooking.rescheduledFrom.reason}
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>

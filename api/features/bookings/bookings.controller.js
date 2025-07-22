@@ -296,7 +296,18 @@ exports.rescheduleBooking = async (req, res) => {
     const originalDate = existingBooking.appointmentDate;
     const originalTime = existingBooking.selectedTime;
 
-    // Update the booking with new schedule
+    // Add to reschedule history
+    const rescheduleEntry = {
+      fromDate: originalDate,
+      fromTime: originalTime,
+      toDate: new Date(appointmentDate),
+      toTime: selectedTime,
+      rescheduledAt: new Date(),
+      reason: reason || 'Admin rescheduled',
+      rescheduledBy: 'admin'
+    };
+
+    // Update the booking with new schedule and add to history
     const updatedBooking = await Booking.findByIdAndUpdate(
       bookingId,
       {
@@ -304,12 +315,7 @@ exports.rescheduleBooking = async (req, res) => {
         selectedTime: selectedTime,
         adminNotes: adminNotes || existingBooking.adminNotes,
         status: 'scheduled', // Mark as scheduled after rescheduling
-        rescheduledFrom: {
-          originalDate: originalDate,
-          originalTime: originalTime,
-          rescheduledAt: new Date(),
-          reason: reason || 'Admin rescheduled'
-        },
+        $push: { rescheduleHistory: rescheduleEntry },
         updatedAt: Date.now()
       },
       { new: true, runValidators: true }
@@ -319,13 +325,14 @@ exports.rescheduleBooking = async (req, res) => {
       success: true,
       message: 'Booking rescheduled successfully',
       data: updatedBooking,
-      originalSchedule: {
-        date: originalDate,
-        time: originalTime
-      },
-      newSchedule: {
-        date: appointmentDate,
-        time: selectedTime
+      rescheduleInfo: {
+        fromDate: originalDate,
+        fromTime: originalTime,
+        toDate: new Date(appointmentDate),
+        toTime: selectedTime,
+        rescheduledAt: new Date(),
+        reason: reason || 'Admin rescheduled',
+        totalReschedules: updatedBooking.rescheduleHistory.length
       }
     });
   } catch (error) {

@@ -8,7 +8,6 @@ const ServicesSection = ({ onBookClick }) => {
       category: 'Communication',
       description: 'Evidence-based interventions for articulation, voice disorders, and language development.',
       benefits: ['Articulation correction', 'Voice therapy', 'Language development', 'Communication skills'],
-      sessions: '2-3x/week',
       accent: '#ff6b35'
     },
     {
@@ -17,7 +16,6 @@ const ServicesSection = ({ onBookClick }) => {
       category: 'Daily Skills',
       description: 'Purposeful activities enhancing independence through motor skills and sensory processing.',
       benefits: ['Fine motor skills', 'Self-help training', 'Sensory integration', 'School readiness'],
-      sessions: '2-3x/week',
       accent: '#ff8a65'
     },
     {
@@ -327,20 +325,22 @@ const ServicesSection = ({ onBookClick }) => {
                         {service.description}
                       </p>
                       
-                      <div style={{
-                        marginBottom: '10px'
-                      }}>
-                        <span style={{
-                          background: service.accent + '20',
-                          color: service.accent,
-                          padding: '2px 6px',
-                          borderRadius: '5px',
-                          fontWeight: '600',
-                          fontSize: '0.75rem'
+                      {service.sessions && (
+                        <div style={{
+                          marginBottom: '10px'
                         }}>
-                          {service.sessions}
-                        </span>
-                      </div>
+                          <span style={{
+                            background: service.accent + '20',
+                            color: service.accent,
+                            padding: '2px 6px',
+                            borderRadius: '5px',
+                            fontWeight: '600',
+                            fontSize: '0.75rem'
+                          }}>
+                            {service.sessions}
+                          </span>
+                        </div>
+                      )}
                       
                       <div style={{
                         display: 'grid',

@@ -3927,3 +3927,206 @@
     font-size: 14px;
   }
 }
+
+/* ================================
+   ANDROID-SPECIFIC ADMIN OPTIMIZATIONS
+   ================================ */
+
+/* Android admin dashboard optimizations */
+@media screen and (max-width: 768px) {
+  /* Android admin section handling */
+  .admin-section {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  /* Android table scroll performance */
+  .table-wrapper-enhanced {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: auto;
+    /* Hardware acceleration for smooth scrolling */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android modal improvements */
+  .booking-details-modal,
+  .auth-modal,
+  .confirmation-modal {
+    /* Fix Android keyboard issues */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Prevent Android from adjusting layout */
+    transform: translateZ(0);
+  }
+  
+  /* Android input optimizations */
+  .admin-styles input,
+  .admin-styles select,
+  .admin-styles textarea {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    border-radius: 8px;
+    /* Prevent Android zoom */
+    font-size: 16px !important;
+    /* Fix Android keyboard layout issues */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android button optimizations */
+  .btn-action,
+  .btn-primary,
+  .big-action-btn,
+  .btn-time-slots {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    /* Android Material Design touch targets */
+    min-height: 48px;
+    min-width: 48px;
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Better touch feedback */
+    transition: all 0.2s ease;
+  }
+  
+  /* Android ripple effect for admin buttons */
+  .btn-action,
+  .big-action-btn,
+  .btn-time-slots,
+  .filter-select {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-action::before,
+  .big-action-btn::before,
+  .btn-time-slots::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+    pointer-events: none;
+  }
+  
+  .btn-action:active::before,
+  .big-action-btn:active::before,
+  .btn-time-slots:active::before {
+    width: 200px;
+    height: 200px;
+  }
+  
+  /* Android safe area for admin */
+  .admin-section .container {
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
+  }
+  
+  .navbar {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Android performance improvements */
+  .patients-table tr,
+  .detail-section,
+  .reschedule-entry,
+  .time-slot-info {
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android scroll behavior */
+  .booking-details-body,
+  .reschedule-modal-content,
+  .time-slot-availability {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Android touch actions */
+  .patients-table,
+  .booking-controls,
+  .time-slots-grid {
+    touch-action: manipulation;
+  }
+  
+  /* Android form focus improvements */
+  .form-group input:focus,
+  .form-group select:focus,
+  .date-input:focus,
+  .filter-select:focus {
+    /* Prevent Android zoom on focus */
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    /* Better focus indication for Android */
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+  }
+  
+  /* Android Chrome address bar compensation */
+  .welcome-header {
+    padding-top: max(1.5rem, env(safe-area-inset-top));
+  }
+  
+  /* Android typography improvements */
+  .admin-section,
+  .admin-section input,
+  .admin-section button,
+  .admin-section select {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+  }
+}
+
+/* Android-specific small screen optimizations */
+@media screen and (max-width: 480px) {
+  /* Android very small screen table handling */
+  .table-wrapper-enhanced {
+    /* Better horizontal scroll for Android */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-orange) transparent;
+  }
+  
+  .table-wrapper-enhanced::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .table-wrapper-enhanced::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .table-wrapper-enhanced::-webkit-scrollbar-thumb {
+    background: var(--primary-orange);
+    border-radius: 2px;
+  }
+  
+  /* Android small screen touch targets */
+  .btn-action {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Android small screen performance */
+  .stat-item,
+  .admin-branch-box,
+  .confirmation-content {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+}

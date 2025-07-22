@@ -7136,8 +7136,8 @@ body {
   .nav-btn,
   input[type="submit"],
   input[type="button"] {
-    min-height: 44px; /* iOS recommended touch target */
-    min-width: 44px;
+    min-height: 48px; /* Android recommended 48dp minimum */
+    min-width: 48px;
   }
   
   /* Better tap highlights */
@@ -7149,7 +7149,7 @@ body {
     -webkit-tap-highlight-color: rgba(255, 107, 53, 0.3);
   }
   
-  /* Prevent zoom on input focus (iOS) */
+  /* Prevent zoom on input focus (iOS & Android) */
   input[type="text"],
   input[type="email"],
   input[type="tel"],
@@ -7198,5 +7198,173 @@ body {
   textarea:focus {
     outline: 2px solid var(--primary-orange);
     outline-offset: 2px;
+  }
+}
+
+/* ================================
+   ANDROID-SPECIFIC OPTIMIZATIONS
+   ================================ */
+
+/* Android Chrome optimizations */
+@media screen and (max-width: 768px) {
+  /* Android viewport handling */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    height: -webkit-fill-available;
+  }
+  
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    position: relative;
+  }
+  
+  /* Android touch actions */
+  .container,
+  .auth-modal-content,
+  .booking-modal-content {
+    touch-action: manipulation;
+  }
+  
+  /* Android scroll optimizations */
+  .table-wrapper,
+  .table-wrapper-enhanced,
+  .auth-modal-body,
+  .booking-details-body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Android input improvements */
+  input,
+  select,
+  textarea {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    border-radius: 8px;
+    background-clip: padding-box;
+    /* Prevent Android keyboard from causing layout issues */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android button improvements */
+  button,
+  .btn,
+  .btn-primary,
+  .btn-secondary {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    border-radius: 8px;
+    background-clip: padding-box;
+    /* Improve touch response */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Better touch feedback */
+    transition: all 0.2s ease;
+  }
+  
+  /* Android Material Design ripple effect */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .time-slot {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn::before,
+  .btn-primary::before,
+  .btn-secondary::before,
+  .time-slot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+  
+  .btn:active::before,
+  .btn-primary:active::before,
+  .btn-secondary:active::before,
+  .time-slot:active::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  /* Android keyboard handling */
+  .auth-modal,
+  .booking-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    /* Prevent scrolling issues on Android */
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Android form improvements */
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    /* Prevent Android from zooming when focusing inputs */
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+  
+  /* Android Chrome address bar handling */
+  .hero-section,
+  .admin-section {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Android performance optimizations */
+  .service-card,
+  .contact-item,
+  .patients-table tr {
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android swipe gestures */
+  .carousel-container,
+  .time-slots-container,
+  .table-wrapper {
+    touch-action: pan-x pan-y;
+  }
+  
+  /* Android safe area handling */
+  .navbar {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .container {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+  
+  /* Android font rendering */
+  body,
+  input,
+  button,
+  select,
+  textarea {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
   }
 }

@@ -3339,4 +3339,228 @@
     margin: 0 4px;
     padding: 12px;
   }
+}
+
+/* ================================
+   ANDROID-SPECIFIC PAYMENT OPTIMIZATIONS
+   ================================ */
+
+/* Android payment page optimizations */
+@media screen and (max-width: 768px) {
+  /* Android payment container handling */
+  .payment-container {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    position: relative;
+  }
+  
+  /* Android QR code optimizations */
+  .qr-code-container {
+    /* Hardware acceleration for better performance */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Better touch handling */
+    touch-action: manipulation;
+  }
+  
+  .qr-code-container img {
+    /* Prevent Android from scaling QR codes incorrectly */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android payment form improvements */
+  .payment-form input,
+  .payment-form select,
+  .payment-form textarea,
+  .confirmation-form input,
+  .confirmation-form select,
+  .confirmation-form textarea {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    border-radius: 8px;
+    /* Prevent Android zoom */
+    font-size: 16px !important;
+    /* Fix Android keyboard issues */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Better background clipping */
+    background-clip: padding-box;
+  }
+  
+  /* Android button optimizations */
+  .btn-continue,
+  .btn-confirm-payment,
+  .btn-upload-receipt,
+  .btn-show-qr {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    border-radius: 8px;
+    /* Android Material Design touch targets */
+    min-height: 48px;
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Better touch feedback */
+    transition: all 0.2s ease;
+    /* Better background clipping */
+    background-clip: padding-box;
+  }
+  
+  /* Android ripple effect for payment buttons */
+  .btn-continue,
+  .btn-confirm-payment,
+  .btn-upload-receipt,
+  .btn-show-qr,
+  .payment-method {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-continue::before,
+  .btn-confirm-payment::before,
+  .btn-upload-receipt::before,
+  .btn-show-qr::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+    pointer-events: none;
+  }
+  
+  .btn-continue:active::before,
+  .btn-confirm-payment:active::before,
+  .btn-upload-receipt:active::before,
+  .btn-show-qr:active::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  /* Android payment method cards */
+  .payment-method {
+    /* Better touch feedback */
+    transition: all 0.3s ease;
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  .payment-method:active {
+    transform: scale(0.98) translateZ(0);
+    -webkit-transform: scale(0.98) translateZ(0);
+  }
+  
+  /* Android upload area improvements */
+  .upload-area {
+    /* Better touch handling */
+    touch-action: manipulation;
+    /* Hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android modal handling */
+  .payment-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Prevent Android layout issues */
+    transform: translateZ(0);
+  }
+  
+  /* Android scroll optimizations */
+  .payment-header-compact,
+  .qr-and-details,
+  .booking-confirmation-details {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Android safe area handling */
+  .payment-container .container {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+  
+  .payment-header,
+  .payment-header-compact {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+  
+  /* Android performance improvements */
+  .summary-card,
+  .payment-method,
+  .progress-step,
+  .detail-group {
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android typography improvements */
+  .payment-container,
+  .payment-container input,
+  .payment-container button,
+  .payment-container select {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+  }
+  
+  /* Android form focus improvements */
+  .payment-form input:focus,
+  .payment-form select:focus,
+  .confirmation-form input:focus,
+  .confirmation-form select:focus {
+    /* Prevent Android zoom on focus */
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    /* Better focus indication */
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+  }
+  
+  /* Android Chrome address bar compensation */
+  .payment-progress {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+}
+
+/* Android-specific payment small screen optimizations */
+@media screen and (max-width: 480px) {
+  /* Android very small screen improvements */
+  .qr-code-container img {
+    /* Ensure QR codes remain scannable on small Android screens */
+    min-width: 160px;
+    min-height: 160px;
+  }
+  
+  /* Android small screen performance */
+  .payment-method,
+  .progress-step,
+  .summary-item {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Android small screen touch targets */
+  .btn-continue,
+  .btn-confirm-payment,
+  .btn-upload-receipt {
+    min-height: 44px;
+  }
 } 

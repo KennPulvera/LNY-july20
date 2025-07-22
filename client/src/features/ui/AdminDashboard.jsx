@@ -1050,10 +1050,12 @@ const AdminDashboard = () => {
                                     <div className="payment-method-badge">
                                       {patient.paymentMethod === 'gcash' ? (
                                         <span className="method-badge gcash">💳 GCash</span>
-                                      ) : patient.paymentMethod === 'bank-transfer' ? (
-                                        <span className="method-badge bank">🏦 Bank Transfer</span>
+                                      ) : patient.paymentMethod === 'maya' ? (
+                                        <span className="method-badge maya">💚 Maya</span>
+                                      ) : patient.paymentMethod === 'cash' ? (
+                                        <span className="method-badge cash">💵 Cash on Site</span>
                                       ) : (
-                                        <span className="method-badge unknown">❓ Unknown</span>
+                                        <span className="method-badge unknown">❓ {patient.paymentMethod || 'Not specified'}</span>
                                       )}
                                     </div>
                                     <strong>Amount:</strong> ₱{patient.paymentAmount ? patient.paymentAmount.toLocaleString() : '2,000'}<br />
@@ -1206,8 +1208,10 @@ const AdminDashboard = () => {
                     <div className="payment-method-display">
                       {selectedBooking.paymentMethod === 'gcash' ? (
                         <span className="method-badge gcash large">💳 GCash</span>
-                      ) : selectedBooking.paymentMethod === 'bank-transfer' ? (
-                        <span className="method-badge bank large">🏦 Bank Transfer</span>
+                      ) : selectedBooking.paymentMethod === 'maya' ? (
+                        <span className="method-badge maya large">💚 Maya</span>
+                      ) : selectedBooking.paymentMethod === 'cash' ? (
+                        <span className="method-badge cash large">💵 Cash on Site</span>
                       ) : (
                         <span className="method-badge unknown large">❓ {selectedBooking.paymentMethod || 'Not specified'}</span>
                       )}
@@ -1350,8 +1354,10 @@ const AdminDashboard = () => {
                   <div className="payment-method-display">
                     {selectedPayment.paymentMethod === 'gcash' ? (
                       <span className="method-badge gcash large">💳 GCash</span>
-                    ) : selectedPayment.paymentMethod === 'bank-transfer' ? (
-                      <span className="method-badge bank large">🏦 Bank Transfer</span>
+                    ) : selectedPayment.paymentMethod === 'maya' ? (
+                      <span className="method-badge maya large">💚 Maya</span>
+                    ) : selectedPayment.paymentMethod === 'cash' ? (
+                      <span className="method-badge cash large">💵 Cash on Site</span>
                     ) : (
                       <span className="method-badge unknown large">❓ {selectedPayment.paymentMethod || 'Not specified'}</span>
                     )}

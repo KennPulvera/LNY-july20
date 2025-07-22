@@ -2323,6 +2323,17 @@
   color: white;
 }
 
+.method-badge.maya {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+.method-badge.cash {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+  color: #212529;
+  font-weight: 600;
+}
+
 .method-badge.bank {
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   color: white;

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 import '../../payment-styles.css';
 import FloatingElements from './FloatingElements';
 
@@ -106,52 +108,97 @@ const PaymentPage = () => {
     setCurrentStep(3);
   };
 
-  const handleConfirmationSubmit = (e) => {
+  const handleConfirmationSubmit = async (e) => {
     e.preventDefault();
     
-    // Handle different payment methods
-    let paymentData;
-    
-    if (selectedMethod === 'cash') {
-      // For cash payments, set status to pending and don't require payment verification
-      paymentData = {
+    try {
+      // Handle different payment methods
+      let paymentUpdateData;
+      
+      if (selectedMethod === 'cash') {
+        // For cash payments, set status to pending and don't require payment verification
+        paymentUpdateData = {
+          paymentMethod: selectedMethod,
+          paymentStatus: 'pending',
+          paymentAmount: 2000,
+          paymentDate: new Date().toISOString(),
+          paymentReference: 'Cash on Site',
+          accountName: bookingData.guardianName || 'Cash Payment'
+        };
+      } else {
+        // For online payments (GCash/Maya), require verification
+        paymentUpdateData = {
+          paymentMethod: selectedMethod,
+          paymentStatus: 'pending-verification',
+          paymentAmount: 2000,
+          paymentDate: confirmationData.paymentDate,
+          paymentReference: confirmationData.paymentReference,
+          accountName: confirmationData.accountName
+        };
+      }
+
+      // Update the booking in the database with payment information
+      const token = localStorage.getItem('userToken');
+      const response = await axios.patch(
+        `${API_BASE_URL}/api/bookings/${bookingData.bookingId}/payment`, 
+        paymentUpdateData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data.success) {
+        // Clear current booking and payment form data
+        localStorage.removeItem('currentBooking');
+        localStorage.removeItem(PAYMENT_FORM_STORAGE_KEY);
+        localStorage.removeItem(PAYMENT_METHOD_STORAGE_KEY);
+        
+        // Show appropriate success message based on payment method
+        if (selectedMethod === 'cash') {
+          alert('✅ Appointment reserved! We will call you to confirm your appointment details. Please bring ₱2,000 cash when you arrive.');
+        } else {
+          alert('✅ Payment confirmation submitted! We will verify your payment and contact you soon.');
+        }
+        
+        window.location.href = '/';
+      } else {
+        throw new Error(response.data.message || 'Failed to update payment information');
+      }
+    } catch (error) {
+      console.error('Error updating payment information:', error);
+      
+      // Fallback to localStorage for offline mode
+      const paymentData = {
         ...bookingData,
         paymentMethod: selectedMethod,
-        paymentStatus: 'pending',
+        paymentStatus: selectedMethod === 'cash' ? 'pending' : 'pending-verification',
         paymentAmount: 2000,
-        paymentDate: new Date().toISOString(),
-        paymentReference: 'Cash on Site',
-        accountName: bookingData.guardianName || 'Cash Payment'
+        ...(selectedMethod === 'cash' ? {
+          paymentDate: new Date().toISOString(),
+          paymentReference: 'Cash on Site',
+          accountName: bookingData.guardianName || 'Cash Payment'
+        } : {
+          paymentDate: confirmationData.paymentDate,
+          paymentReference: confirmationData.paymentReference,
+          accountName: confirmationData.accountName
+        })
       };
-    } else {
-      // For online payments (GCash/Bank), require verification
-      paymentData = {
-        ...bookingData,
-        ...confirmationData,
-        paymentMethod: selectedMethod,
-        paymentStatus: 'pending-verification',
-        paymentAmount: 2000
-      };
+      
+      const existingBookings = JSON.parse(localStorage.getItem('assessmentBookings') || '[]');
+      existingBookings.push(paymentData);
+      localStorage.setItem('assessmentBookings', JSON.stringify(existingBookings));
+      
+      // Clear current booking and payment form data
+      localStorage.removeItem('currentBooking');
+      localStorage.removeItem(PAYMENT_FORM_STORAGE_KEY);
+      localStorage.removeItem(PAYMENT_METHOD_STORAGE_KEY);
+      
+      alert('⚠️ Payment information saved locally. Please contact us if you experience any issues.');
+      window.location.href = '/';
     }
-    
-    // Save to localStorage
-    const existingBookings = JSON.parse(localStorage.getItem('assessmentBookings') || '[]');
-    existingBookings.push(paymentData);
-    localStorage.setItem('assessmentBookings', JSON.stringify(existingBookings));
-    
-    // Clear current booking and payment form data
-    localStorage.removeItem('currentBooking');
-    localStorage.removeItem(PAYMENT_FORM_STORAGE_KEY);
-    localStorage.removeItem(PAYMENT_METHOD_STORAGE_KEY);
-    
-    // Show appropriate success message based on payment method
-    if (selectedMethod === 'cash') {
-      alert('Appointment reserved! We will call you to confirm your appointment details. Please bring ₱2,000 cash when you arrive.');
-    } else {
-      alert('Payment confirmation submitted! We will verify your payment and contact you soon.');
-    }
-    
-    window.location.href = '/';
   };
 
   const handleInputChange = (e) => {

@@ -150,6 +150,7 @@ exports.updatePaymentStatus = async (req, res) => {
       paymentMethod: req.body.paymentMethod,
       paymentReference: req.body.paymentReference,
       paymentDate: req.body.paymentDate,
+      paymentAmount: req.body.paymentAmount,
       accountName: req.body.accountName,
       updatedAt: Date.now()
     };

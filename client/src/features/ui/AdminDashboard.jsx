@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../admin-styles.css';
 import FloatingElements from './FloatingElements';
@@ -90,14 +90,14 @@ const AdminDashboard = () => {
     }
   };
 
-  const adminLogout = () => {
+  const adminLogout = useCallback(() => {
     // Clear all authentication data
     localStorage.removeItem('adminAuth');
     localStorage.removeItem('userData');
     localStorage.removeItem('userToken');
     setIsAuthenticated(false);
     navigate('/'); // Redirect to main page
-  };
+  }, [navigate]);
 
   const loadPatientData = () => {
     // Load patient data from localStorage or API
@@ -255,12 +255,6 @@ const AdminDashboard = () => {
     requestDeletePassword(performDeletion);
   };
 
-  // Function to recalculate statistics based on current data
-  const refreshStats = () => {
-    // This forces a re-render of the stats section
-    setPatients(prev => ({ ...prev }));
-  };
-  
   // Removed unused deleteEntireBooking function to fix ESLint error
 
   const markBookingDone = (bookingIndex) => {

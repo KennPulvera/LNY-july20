@@ -2,7 +2,7 @@ import React from 'react';
 
 const FloatingCTA = ({ onBookClick }) => {
   return (
-    <div style={{
+    <div className="floating-cta-container" style={{
       position: 'fixed',
       bottom: '0',
       left: '0',
@@ -23,7 +23,7 @@ const FloatingCTA = ({ onBookClick }) => {
         padding: '0 20px'
       }}>
         {/* Left side - Quick info */}
-        <div style={{
+        <div className="cta-left-content" style={{
           color: 'white',
           display: 'flex',
           alignItems: 'center',
@@ -48,7 +48,7 @@ const FloatingCTA = ({ onBookClick }) => {
           </div>
           
           {/* Quick features */}
-          <div style={{
+          <div className="cta-features" style={{
             display: 'flex',
             gap: '15px',
             opacity: '0.9'

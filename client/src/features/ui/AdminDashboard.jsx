@@ -697,10 +697,21 @@ const AdminDashboard = () => {
         <div className="container">
           {/* Welcome Header */}
           <div className="welcome-header">
-            <div className="welcome-content">
-              <h1>👋 Welcome to Lance and Yuri Kids Spot Naga City Admin</h1>
-              <p className="welcome-subtitle">Manage your patient appointments easily and efficiently</p>
+                      <div className="welcome-content">
+            <h1>👋 Welcome to Lance and Yuri Kids Spot Naga City Admin</h1>
+            <p className="welcome-subtitle">Manage your patient appointments easily and efficiently</p>
+            <div style={{
+              background: 'linear-gradient(135deg, #fff3cd, #ffeaa7)',
+              border: '1px solid #ffc107',
+              borderRadius: '8px',
+              padding: '12px',
+              marginTop: '10px',
+              fontSize: '0.9rem',
+              color: '#856404'
+            }}>
+              <strong>📝 Note:</strong> Address and Professional fields will show "not provided/selected" for existing bookings. New bookings will include this information.
             </div>
+          </div>
             
             {/* Branch Selection */}
             <div className="branch-filter-section">
@@ -931,7 +942,7 @@ const AdminDashboard = () => {
                               <div className="contact-info">
                                 {patient.guardianPhone}<br />
                                 {patient.guardianEmail}<br />
-                                <small>{patient.guardianAddress}</small>
+                                <small>{patient.guardianAddress || 'Address not provided'}</small>
                               </div>
                             </td>
                             <td>
@@ -1163,7 +1174,7 @@ const AdminDashboard = () => {
                     <strong>Email:</strong> {selectedBooking.guardianEmail}
                   </div>
                   <div className="detail-item">
-                    <strong>Address:</strong> {selectedBooking.guardianAddress}
+                    <strong>Address:</strong> {selectedBooking.guardianAddress || 'Address not provided'}
                   </div>
                 </div>
 
@@ -1195,7 +1206,8 @@ const AdminDashboard = () => {
                       selectedBooking.selectedProfessional === 'developmental-pediatrician' ? '👶 Developmental Pediatrician' :
                       selectedBooking.selectedProfessional === 'occupational-therapist' ? '🖐️ Occupational Therapist' :
                       selectedBooking.selectedProfessional === 'speech-language-pathologist' ? '🗣️ Speech and Language Pathologist' :
-                      selectedBooking.selectedProfessional
+                      selectedBooking.selectedProfessional === 'not-specified' ? 'Professional not selected (existing booking)' :
+                      selectedBooking.selectedProfessional || 'Professional not selected'
                     }
                   </div>
                 </div>

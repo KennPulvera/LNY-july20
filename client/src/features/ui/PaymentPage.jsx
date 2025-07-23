@@ -689,6 +689,10 @@ const PaymentPage = () => {
                               <span>{bookingData?.guardianPhone}</span>
                             </div>
                             <div className="detail-group">
+                              <label>Address:</label>
+                              <span>{(bookingData?.guardianAddress && bookingData.guardianAddress.trim() !== '') ? bookingData.guardianAddress : 'Not provided'}</span>
+                            </div>
+                            <div className="detail-group">
                               <label>Branch:</label>
                               <span>{bookingData?.branchLocation === 'blumentritt' ? 'Main Branch - Blumentritt' : 'Satellite Branch - Del Rosario'}</span>
                             </div>
@@ -699,6 +703,15 @@ const PaymentPage = () => {
                             <div className="detail-group">
                               <label>Service:</label>
                               <span>Initial Assessment</span>
+                            </div>
+                            <div className="detail-group">
+                              <label>Professional:</label>
+                              <span>
+                                {bookingData?.selectedProfessional === 'developmental-pediatrician' ? 'Developmental Pediatrician' :
+                                 bookingData?.selectedProfessional === 'occupational-therapist' ? 'Occupational Therapist' :
+                                 bookingData?.selectedProfessional === 'speech-language-pathologist' ? 'Speech and Language Pathologist' :
+                                 (bookingData?.selectedProfessional && bookingData.selectedProfessional.trim() !== '') ? bookingData.selectedProfessional : 'Not selected'}
+                              </span>
                             </div>
                             <div className="detail-group">
                               <label>Payment Method:</label>

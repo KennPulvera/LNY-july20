@@ -942,7 +942,7 @@ const AdminDashboard = () => {
                               <div className="contact-info">
                                 {patient.guardianPhone}<br />
                                 {patient.guardianEmail}<br />
-                                <small>{patient.guardianAddress || 'Address not provided'}</small>
+                                <small>{(patient.guardianAddress && patient.guardianAddress.trim() !== '') ? patient.guardianAddress : 'Address not provided'}</small>
                               </div>
                             </td>
                             <td>
@@ -1174,7 +1174,7 @@ const AdminDashboard = () => {
                     <strong>Email:</strong> {selectedBooking.guardianEmail}
                   </div>
                   <div className="detail-item">
-                    <strong>Address:</strong> {selectedBooking.guardianAddress || 'Address not provided'}
+                    <strong>Address:</strong> {selectedBooking.guardianAddress && selectedBooking.guardianAddress.trim() !== '' ? selectedBooking.guardianAddress : 'Address not provided'}
                   </div>
                 </div>
 
@@ -1207,7 +1207,7 @@ const AdminDashboard = () => {
                       selectedBooking.selectedProfessional === 'occupational-therapist' ? '🖐️ Occupational Therapist' :
                       selectedBooking.selectedProfessional === 'speech-language-pathologist' ? '🗣️ Speech and Language Pathologist' :
                       selectedBooking.selectedProfessional === 'not-specified' ? 'Professional not selected (existing booking)' :
-                      selectedBooking.selectedProfessional || 'Professional not selected'
+                      (selectedBooking.selectedProfessional && selectedBooking.selectedProfessional.trim() !== '') ? selectedBooking.selectedProfessional : 'Professional not selected'
                     }
                   </div>
                 </div>

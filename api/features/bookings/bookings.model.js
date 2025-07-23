@@ -34,6 +34,10 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  guardianAddress: {
+    type: String,
+    trim: true
+  },
   
   // Child Information
   childName: {
@@ -60,6 +64,10 @@ const bookingSchema = new mongoose.Schema({
   selectedTime: {
     type: String,
     required: true
+  },
+  selectedProfessional: {
+    type: String,
+    trim: true
   },
   
   // Service Information

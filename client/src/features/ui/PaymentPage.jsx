@@ -428,7 +428,7 @@ const PaymentPage = () => {
                                 <img 
                                   src={selectedMethod === 'gcash' ? '/images/gcash-payment.jpg' : '/images/maya-payment.jpg'} 
                                   alt={`${selectedMethod === 'gcash' ? 'GCash' : 'Maya'} QR Code`}
-                                  style={{ width: '200px', height: '200px', objectFit: 'contain' }}
+                                  style={{ width: '300px', height: '300px', objectFit: 'contain' }}
                                 />
                               </div>
                               <div className="payment-amount-compact">

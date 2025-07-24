@@ -425,10 +425,17 @@ const PaymentPage = () => {
                           <li>
                             <span style={{ fontWeight: 'bold' }}>Option 1: Scan QR Code</span>
                             <div className="qr-code-section-compact">
-                              <div className="qr-placeholder-compact">
-                                <p><i className="fas fa-qrcode"></i> QR Code Coming Soon</p>
-                                <small>Scan with your {selectedMethod === 'gcash' ? 'GCash' : 'Maya'} app</small>
+                              <div className="qr-code-wrapper">
+                                <img 
+                                  src={selectedMethod === 'gcash' ? '/images/gcash-payment.jpg' : '/images/maya-payment.jpg'} 
+                                  alt={`${selectedMethod === 'gcash' ? 'GCash' : 'Maya'} QR Code`}
+                                  style={{ width: '200px', height: '200px', objectFit: 'contain' }}
+                                />
                               </div>
+                              <div className="payment-amount-compact">
+                                ₱2,000
+                              </div>
+                              <small>Scan with your {selectedMethod === 'gcash' ? 'GCash' : 'Maya'} app</small>
                             </div>
                           </li>
                           <li>
@@ -555,102 +562,7 @@ const PaymentPage = () => {
                 </div>
               )}
 
-              {/* Step 2: Payment Details - Maya */}
-              {currentStep === 2 && selectedMethod === 'maya' && (
-                <div className="payment-step" id="step-2-maya" data-step="2">
-                  <div className="step-header-compact">
-                    <h3><i className="fas fa-mobile-alt"></i> Step 2: Scan QR Code</h3>
-                    <div className={`payment-warning-inline countdown-${getCountdownStatus()}`}>
-                      <i className="fas fa-clock"></i>
-                      <span>
-                        {isExpired ? (
-                          <span className="expired-text">⚠️ Session Expired - Please start over</span>
-                        ) : (
-                          <>
-                            <span className="countdown-text">Time remaining: </span>
-                            <span className="countdown-timer">{formatTime(timeLeft)}</span>
-                            <span className="countdown-note"> • No refunds</span>
-                          </>
-                        )}
-                      </span>
-                    </div>
-                  </div>
 
-                  <div className="qr-payment-container-compact">
-                    <div className="payment-details-compact">
-                      <div className="payment-steps-compact">
-                        <h4>How to Pay:</h4>
-                        <ol>
-                          <li style={{ marginBottom: '2rem' }}>
-                            <span style={{ fontWeight: 'bold', minWidth: '160px' }}>Option 1: Scan QR Code</span>
-                            <div style={{ marginLeft: '2.5rem', marginTop: '1rem' }}>
-                              <button 
-                                id="show-maya-qr-btn" 
-                                className="btn-show-qr" 
-                                type="button" 
-                                onClick={() => setShowQR(!showQR)}
-                              >
-                                <i className="fas fa-qrcode"></i> {showQR ? 'Hide' : 'Show'} QR Code
-                              </button>
-                              {showQR && (
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '1rem' }}>
-                                  <img 
-                                    id="maya-qr-img" 
-                                    src="./images/maya-payment.jpg"
-                                    alt="Maya Payment QR Code - ₱2,000.00" 
-                                    style={{ 
-                                      maxWidth: '400px', 
-                                      width: '100%', 
-                                      height: 'auto'
-                                    }}
-                                  />
-                                  <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-                                    <p style={{ color: '#666', fontSize: '14px' }}>
-                                      <i className="fas fa-mobile-alt"></i> Scan QR code with your Maya app to pay ₱2,000.00
-                                    </p>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </li>
-                          <li>
-                            <span style={{ fontWeight: 'bold' }}>Option 2: Send to Maya Account</span>
-                            <div className="maya-account-info-compact" style={{ marginTop: '1rem' }}>
-                              <h4><i className="fas fa-mobile-alt"></i> Maya Details</h4>
-                              <div className="account-detail">
-                                <span className="label">Name:</span>
-                                <span className="value">Ernie Singson</span>
-                              </div>
-                              <div className="account-detail">
-                                <span className="label">Number:</span>
-                                <span className="value">09299512205</span>
-                              </div>
-                            </div>
-                          </li>
-                        </ol>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="step-actions">
-                    <button 
-                      className="btn-back" 
-                      onClick={() => setCurrentStep(1)}
-                    >
-                      <i className="fas fa-arrow-left"></i>
-                      Back to Methods
-                    </button>
-                    <button 
-                      className="btn-next" 
-                      onClick={proceedToStep3}
-                      disabled={isExpired}
-                    >
-                      {isExpired ? 'Session Expired' : 'Payment Completed'}
-                      {!isExpired && <i className="fas fa-arrow-right"></i>}
-                    </button>
-                  </div>
-                </div>
-              )}
 
               {/* Step 3: Payment Confirmation */}
               {currentStep === 3 && (

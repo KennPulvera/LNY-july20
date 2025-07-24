@@ -7,7 +7,6 @@ import FloatingElements from './FloatingElements';
 const PaymentPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedMethod, setSelectedMethod] = useState('');
-  const [showQR, setShowQR] = useState(false);
   const [bookingData, setBookingData] = useState(null);
   const [confirmationData, setConfirmationData] = useState({
     paymentDate: '',

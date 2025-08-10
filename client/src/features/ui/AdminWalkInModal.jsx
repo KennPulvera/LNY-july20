@@ -39,8 +39,8 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
 
   // Branch locations
   const branchLocations = [
-    'Daraga, Albay',
-    'Legazpi City'
+    'blumentritt',
+    'delrosario'
   ];
 
   // Relation options
@@ -55,7 +55,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
   // Fetch professionals when the component mounts
   const fetchProfessionals = useCallback(async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/admin/professionals`, {
+      const response = await axios.get(`${API_BASE_URL}/api/admin/professionals`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`
         }
@@ -63,7 +63,13 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
       setProfessionals(response.data);
     } catch (err) {
       console.error('Error fetching professionals:', err);
-      setError('Failed to fetch professionals. Please try again.');
+      // Fallback to static list if API unavailable (keeps modal functional)
+      setProfessionals([
+        { _id: 'developmental-pediatrician', name: 'Developmental Pediatrician' },
+        { _id: 'occupational-therapist', name: 'Occupational Therapist' },
+        { _id: 'speech-language-pathologist', name: 'Speech & Language Pathologist' }
+      ]);
+      setError('Failed to fetch professionals. Using defaults.');
     }
   }, []);
 
@@ -115,15 +121,16 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
   // Fetch time slots when appointment date changes
   const fetchAvailableTimeSlots = useCallback(async () => {
     try {
+      const branch = formData.branchLocation || selectedBranch || 'blumentritt';
       const response = await axios.get(
-        `${API_BASE_URL}/bookings/available-slots?date=${formData.appointmentDate}&professional=${formData.selectedProfessional}`,
+        `${API_BASE_URL}/api/bookings/availability/${formData.appointmentDate}?branch=${encodeURIComponent(branch)}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('userToken')}`
           }
         }
       );
-      setAvailableTimeSlots(response.data.availableSlots);
+      setAvailableTimeSlots(response.data.availableSlots || []);
     } catch (err) {
       console.error('Error fetching time slots:', err);
       setError('Failed to fetch available time slots. Please try again.');
@@ -174,7 +181,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
     try {
       // Create booking without requiring user account
       const response = await axios.post(
-        `${API_BASE_URL}/admin/walk-in-booking`,
+        `${API_BASE_URL}/api/admin/walk-in-booking`,
         formData,
         {
           headers: {

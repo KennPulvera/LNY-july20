@@ -907,12 +907,16 @@ const AdminDashboard = () => {
                     </div>
                     <div className="filter-group">
                       <label>Profession:</label>
-                      <div className="profession-chips" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        <button type="button" className={`btn-action ${professionFilter === 'all' ? 'active' : ''}`} onClick={() => setProfessionFilter('all')}>All</button>
-                        <button type="button" className={`btn-action ${professionFilter === 'developmental-pediatrician' ? 'active' : ''}`} onClick={() => setProfessionFilter('developmental-pediatrician')}>Developmental Pediatrician</button>
-                        <button type="button" className={`btn-action ${professionFilter === 'occupational-therapist' ? 'active' : ''}`} onClick={() => setProfessionFilter('occupational-therapist')}>Occupational Therapist</button>
-                        <button type="button" className={`btn-action ${professionFilter === 'speech-language-pathologist' ? 'active' : ''}`} onClick={() => setProfessionFilter('speech-language-pathologist')}>Speech & Language Pathologist</button>
-                      </div>
+                      <select
+                        value={professionFilter}
+                        onChange={(e) => setProfessionFilter(e.target.value)}
+                        className="filter-select"
+                      >
+                        <option value="all">All</option>
+                        <option value="developmental-pediatrician">Developmental Pediatrician</option>
+                        <option value="occupational-therapist">Occupational Therapist</option>
+                        <option value="speech-language-pathologist">Speech & Language Pathologist</option>
+                      </select>
                     </div>
                   </div>
                   

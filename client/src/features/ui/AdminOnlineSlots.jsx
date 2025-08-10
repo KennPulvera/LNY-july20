@@ -119,7 +119,7 @@ const AdminOnlineSlots = () => {
               <button className="big-action-btn" onClick={() => navigate('/admin')}>
                 ← Back to Dashboard
               </button>
-              <button className="big-action-btn" onClick={() => navigate('/admin/online-consultations')}>
+              <button className="big-action-btn" onClick={() => navigate('/admin')}>
                 📋 View Online Bookings
               </button>
             </div>

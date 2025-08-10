@@ -12,10 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route
-            path="/admin/online-consultations"
-            element={<AdminDashboard initialServiceTypeFilter="Online Consultation" isOnlinePage={true} />}
-          />
+          {/** Removed separate online consultations route; online slots are in /admin */}
           <Route path="/payment" element={<PaymentPage />} />
         </Routes>
       </div>

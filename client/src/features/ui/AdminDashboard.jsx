@@ -21,6 +21,8 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
   const [dateSort, setDateSort] = useState('upcoming'); // 'upcoming', 'recent', 'oldest'
   const [showTimeSlotView, setShowTimeSlotView] = useState(false);
   const [selectedDateForSlots, setSelectedDateForSlots] = useState(new Date().toISOString().split('T')[0]);
+  const [showOnlineTimeSlotView, setShowOnlineTimeSlotView] = useState(isOnlinePage);
+  const [selectedDateForOnlineSlots, setSelectedDateForOnlineSlots] = useState(new Date().toISOString().split('T')[0]);
   const [professionFilter, setProfessionFilter] = useState('all');
   const [serviceTypeFilter, setServiceTypeFilter] = useState(initialServiceTypeFilter);
   const [isWalkInOpen, setIsWalkInOpen] = useState(false);
@@ -156,27 +158,42 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
       '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
     ];
 
-    // Online Consultation view uses global slots (not branch-specific) and Saturdays only
-    if (isOnlinePage) {
-      const isSaturday = new Date(date).getDay() === 6;
-      if (!isSaturday) {
-        return [];
-      }
-    }
-
     const bookingsForDate = patients.assessments.filter(booking => {
       const bookingDate = new Date(booking.appointmentDate).toISOString().split('T')[0];
       if (bookingDate !== date) return false;
       if (booking.status === 'cancelled' || booking.assessmentDeleted) return false;
-      if (isOnlinePage) {
-        return (booking.serviceType === 'Online Consultation');
-      }
       return booking.branchLocation === selectedBranch && (booking.serviceType || 'Initial Assessment') !== 'Online Consultation';
     });
 
     const bookedSlots = bookingsForDate.map(booking => booking.selectedTime);
     
     return allTimeSlots.map(slot => ({
+      time: slot,
+      isBooked: bookedSlots.includes(slot),
+      bookingsCount: bookedSlots.filter(booked => booked === slot).length,
+      bookings: bookingsForDate.filter(booking => booking.selectedTime === slot)
+    }));
+  };
+
+  // Online Consultation availability (global, Saturdays-only)
+  const getOnlineConsultationAvailability = (date) => {
+    const onlineSlots = [
+      '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+      '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
+    ];
+
+    const isSaturday = new Date(date).getDay() === 6;
+    if (!isSaturday) return [];
+
+    const bookingsForDate = patients.assessments.filter(booking => {
+      const bookingDate = new Date(booking.appointmentDate).toISOString().split('T')[0];
+      if (bookingDate !== date) return false;
+      if (booking.status === 'cancelled' || booking.assessmentDeleted) return false;
+      return (booking.serviceType === 'Online Consultation');
+    });
+
+    const bookedSlots = bookingsForDate.map(booking => booking.selectedTime);
+    return onlineSlots.map(slot => ({
       time: slot,
       isBooked: bookedSlots.includes(slot),
       bookingsCount: bookedSlots.filter(booked => booked === slot).length,
@@ -947,8 +964,8 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
                     )}
                     <div className="filter-group">
                       <button
-                        className="btn-time-slots"
-                        onClick={(e) => { e.preventDefault(); navigate('/admin/online-consultations/slots'); }}
+                        className={`btn-time-slots ${showOnlineTimeSlotView ? 'active' : ''}`}
+                        onClick={() => setShowOnlineTimeSlotView(!showOnlineTimeSlotView)}
                         title="View Online Consultation time slots"
                       >
                         <i className="fas fa-video"></i> Online Time Slots
@@ -983,7 +1000,7 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
                     </div>
                   </div>
                   
-                  {/* Time Slot Availability View (hidden on online page) */}
+                  {/* Time Slot Availability View (branch-based) */}
                   {showTimeSlotView && !isOnlinePage && (
                     <div className="time-slot-availability">
                       <div className="slot-date-picker">
@@ -1003,6 +1020,54 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
                       
                       <div className="time-slots-grid">
                         {getTimeSlotAvailability(selectedDateForSlots).map((slot, index) => (
+                          <div 
+                            key={index} 
+                            className={`time-slot-info ${slot.isBooked ? 'booked' : 'available'}`}
+                          >
+                            <div className="slot-time">{slot.time}</div>
+                            <div className="slot-status">
+                              {slot.isBooked ? (
+                                <>
+                                  <span className="booked-badge">
+                                    <i className="fas fa-user"></i> {slot.bookingsCount} Booked
+                                  </span>
+                                  {slot.bookings.map((booking, i) => (
+                                    <div key={i} className="slot-booking-info">
+                                      {booking.childName} ({booking.guardianName})
+                                    </div>
+                                  ))}
+                                </>
+                              ) : (
+                                <span className="available-badge">
+                                  <i className="fas fa-check"></i> Available
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Online Consultation Time Slot Availability View (global) */}
+                  {showOnlineTimeSlotView && (
+                    <div className="time-slot-availability">
+                      <div className="slot-date-picker">
+                        <label>View online availability for:</label>
+                        <input 
+                          type="date" 
+                          value={selectedDateForOnlineSlots}
+                          onChange={(e) => setSelectedDateForOnlineSlots(e.target.value)}
+                          className="date-input"
+                        />
+                        {new Date(selectedDateForOnlineSlots).getDay() !== 6 && (
+                          <small style={{ color: '#c05621', display: 'block', marginTop: '8px' }}>
+                            Online Consultation is available on Saturdays only.
+                          </small>
+                        )}
+                      </div>
+                      <div className="time-slots-grid">
+                        {getOnlineConsultationAvailability(selectedDateForOnlineSlots).map((slot, index) => (
                           <div 
                             key={index} 
                             className={`time-slot-info ${slot.isBooked ? 'booked' : 'available'}`}

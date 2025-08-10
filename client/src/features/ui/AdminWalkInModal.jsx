@@ -26,7 +26,6 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [step, setStep] = useState(1);
   const [professionals, setProfessionals] = useState([]);
-  const [availableDates, setAvailableDates] = useState([]);
 
   // Service types
   const serviceTypes = [
@@ -86,37 +85,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
     }
   }, [formData.childBirthday]);
 
-  // Update available dates when service type or professional changes
-  const generateAvailableDates = useCallback(() => {
-    const dates = [];
-    const today = new Date();
-    const maxDate = new Date();
-    maxDate.setDate(today.getDate() + 60); // Allow booking up to 60 days in advance
-    
-    const isOnlineConsultation = formData.serviceType === 'Online Consultation';
-    
-    for (let date = new Date(today); date <= maxDate; date.setDate(date.getDate() + 1)) {
-      if (date < today) continue;
-      if (isOnlineConsultation && date.getDay() !== 6) continue; // Saturdays only
-      const dateString = date.toISOString().split('T')[0];
-      dates.push(dateString);
-    }
-    
-    setAvailableDates(dates);
-    if (formData.appointmentDate && !dates.includes(formData.appointmentDate)) {
-      setFormData({
-        ...formData,
-        appointmentDate: '',
-        selectedTime: ''
-      });
-    }
-  }, [formData]);
-
-  useEffect(() => {
-    if (formData.serviceType && formData.selectedProfessional) {
-      generateAvailableDates();
-    }
-  }, [formData.serviceType, formData.selectedProfessional, generateAvailableDates]);
+  // Available dates are enforced at input time via min/max and Saturday-only rules for Online Consultation
 
   // Fetch time slots when appointment date changes
   const fetchAvailableTimeSlots = useCallback(async () => {

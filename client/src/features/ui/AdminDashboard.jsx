@@ -836,7 +836,7 @@ const AdminDashboard = () => {
               </span>
             </button>
             <button
-              className="big-action-btn"
+              className={`big-action-btn ${isWalkInOpen ? 'active' : ''}`}
               onClick={openWalkInModal}
               title="Add a walk-in booking without creating a user account"
             >

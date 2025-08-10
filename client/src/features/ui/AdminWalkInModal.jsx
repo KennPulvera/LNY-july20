@@ -480,27 +480,29 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
                 
                 <div className="form-group">
                   <label>Appointment Date:</label>
-                  <select 
-                    name="appointmentDate" 
-                    value={formData.appointmentDate} 
-                    onChange={handleChange}
+                  <input
+                    type="date"
+                    id="appointmentDate"
+                    name="appointmentDate"
+                    value={formData.appointmentDate}
+                    min={new Date().toISOString().split('T')[0]}
+                    max={(() => { const d = new Date(); d.setDate(d.getDate() + 60); return d.toISOString().split('T')[0]; })()}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Enforce Saturday-only for Online Consultation
+                      if (formData.serviceType === 'Online Consultation') {
+                        const day = new Date(value).getDay();
+                        if (day !== 6) {
+                          setError('Online Consultation is available on Saturdays only.');
+                          setFormData(prev => ({ ...prev, appointmentDate: '', selectedTime: '' }));
+                          setAvailableTimeSlots([]);
+                          return;
+                        }
+                      }
+                      handleChange(e);
+                    }}
                     required
-                  >
-                    <option value="">Select Date</option>
-                    {availableDates.map(date => {
-                      const displayDate = new Date(date).toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      });
-                      return (
-                        <option key={date} value={date}>
-                          {displayDate}
-                        </option>
-                      );
-                    })}
-                  </select>
+                  />
                 </div>
                 
                 <div className="form-group">

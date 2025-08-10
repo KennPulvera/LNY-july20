@@ -37,6 +37,7 @@ const AdminDashboard = () => {
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
   const [selectedBookingForReschedule, setSelectedBookingForReschedule] = useState(null);
   const [rescheduleData, setRescheduleData] = useState({
+    serviceType: 'Initial Assessment',
     appointmentDate: '',
     selectedTime: '',
     reason: '',
@@ -487,6 +488,7 @@ const AdminDashboard = () => {
     if (window.confirm(`Are you sure you want to reschedule the appointment for ${booking.childName} (${booking.guardianName})?\n\nCurrent appointment: ${new Date(booking.appointmentDate).toLocaleDateString()} at ${booking.selectedTime}`)) {
       setSelectedBookingForReschedule(booking);
       setRescheduleData({
+        serviceType: booking.serviceType || 'Initial Assessment',
         appointmentDate: '',
         selectedTime: '',
         reason: '',
@@ -500,6 +502,7 @@ const AdminDashboard = () => {
     setIsRescheduleModalOpen(false);
     setSelectedBookingForReschedule(null);
     setRescheduleData({
+      serviceType: 'Initial Assessment',
       appointmentDate: '',
       selectedTime: '',
       reason: '',
@@ -571,7 +574,8 @@ const AdminDashboard = () => {
           appointmentDate: rescheduleData.appointmentDate,
           selectedTime: rescheduleData.selectedTime,
           adminNotes: rescheduleData.adminNotes,
-          reason: rescheduleData.reason || 'Admin rescheduled'
+          reason: rescheduleData.reason || 'Admin rescheduled',
+          serviceType: rescheduleData.serviceType
         });
 
         if (response.data.success) {
@@ -609,6 +613,7 @@ const AdminDashboard = () => {
             ...updatedBookings[bookingIndex],
             appointmentDate: rescheduleData.appointmentDate,
             selectedTime: rescheduleData.selectedTime,
+            serviceType: rescheduleData.serviceType,
             adminNotes: rescheduleData.adminNotes,
             status: 'scheduled',
             rescheduledFrom: {
@@ -1506,6 +1511,31 @@ const AdminDashboard = () => {
 
               <div className="reschedule-form">
                 <div className="form-group">
+                  <label htmlFor="rescheduleServiceType">Service Type:</label>
+                  <select
+                    id="rescheduleServiceType"
+                    value={rescheduleData.serviceType}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setRescheduleData(prev => ({
+                        ...prev,
+                        serviceType: value,
+                        appointmentDate: (value === 'Online Consultation' && prev.appointmentDate && new Date(prev.appointmentDate).getDay() !== 6) ? '' : prev.appointmentDate,
+                        selectedTime: value === 'Online Consultation' ? '' : prev.selectedTime
+                      }));
+                      if (rescheduleData.appointmentDate && value === 'Online Consultation' && new Date(rescheduleData.appointmentDate).getDay() !== 6) {
+                        setAvailableTimeSlotsForReschedule([]);
+                      }
+                    }}
+                  >
+                    <option value="Initial Assessment">Initial Assessment</option>
+                    <option value="Online Consultation">Online Consultation</option>
+                  </select>
+                  {rescheduleData.serviceType === 'Online Consultation' && (
+                    <small style={{ color: '#c05621' }}>Online Consultation is available on Saturdays only.</small>
+                  )}
+                </div>
+                <div className="form-group">
                   <label htmlFor="rescheduleDate">New Appointment Date:</label>
                   <input 
                     type="date" 
@@ -1513,8 +1543,18 @@ const AdminDashboard = () => {
                     value={rescheduleData.appointmentDate}
                     min={new Date().toISOString().split('T')[0]}
                     onChange={(e) => {
-                      setRescheduleData(prev => ({ ...prev, appointmentDate: e.target.value, selectedTime: '' }));
-                      loadTimeSlotsForReschedule(e.target.value);
+                      const value = e.target.value;
+                      if (rescheduleData.serviceType === 'Online Consultation') {
+                        const day = new Date(value).getDay();
+                        if (day !== 6) {
+                          alert('Online Consultation is available on Saturdays only.');
+                          setRescheduleData(prev => ({ ...prev, appointmentDate: '', selectedTime: '' }));
+                          setAvailableTimeSlotsForReschedule([]);
+                          return;
+                        }
+                      }
+                      setRescheduleData(prev => ({ ...prev, appointmentDate: value, selectedTime: '' }));
+                      loadTimeSlotsForReschedule(value);
                     }}
                     required 
                   />

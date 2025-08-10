@@ -156,12 +156,22 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
       '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
     ];
 
+    // Online Consultation view uses global slots (not branch-specific) and Saturdays only
+    if (isOnlinePage) {
+      const isSaturday = new Date(date).getDay() === 6;
+      if (!isSaturday) {
+        return [];
+      }
+    }
+
     const bookingsForDate = patients.assessments.filter(booking => {
       const bookingDate = new Date(booking.appointmentDate).toISOString().split('T')[0];
-      return bookingDate === date && 
-             booking.branchLocation === selectedBranch && 
-             booking.status !== 'cancelled' &&
-             !booking.assessmentDeleted;
+      if (bookingDate !== date) return false;
+      if (booking.status === 'cancelled' || booking.assessmentDeleted) return false;
+      if (isOnlinePage) {
+        return (booking.serviceType === 'Online Consultation');
+      }
+      return booking.branchLocation === selectedBranch;
     });
 
     const bookedSlots = bookingsForDate.map(booking => booking.selectedTime);
@@ -515,7 +525,40 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
     if (!date || !selectedBookingForReschedule) return;
     
     try {
-      // Get available time slots from API
+      // Online Consultation uses global availability and Saturdays-only
+      if (rescheduleData.serviceType === 'Online Consultation') {
+        const isSaturday = new Date(date).getDay() === 6;
+        if (!isSaturday) {
+          setAvailableTimeSlotsForReschedule([]);
+          return;
+        }
+
+        const allTimeSlots = [
+          '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+          '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
+        ];
+
+        const existingBookings = patients.assessments.filter(booking => {
+          const bookingDate = new Date(booking.appointmentDate).toDateString();
+          const selectedDate = new Date(date).toDateString();
+          if (bookingDate !== selectedDate) return false;
+          if (booking._id === selectedBookingForReschedule._id) return false;
+          if (booking.status === 'cancelled' || booking.assessmentDeleted) return false;
+          return booking.serviceType === 'Online Consultation';
+        });
+
+        const bookedSlots = existingBookings.map(booking => booking.selectedTime);
+        const availableSlots = allTimeSlots.filter(slot => !bookedSlots.includes(slot));
+
+        // Add back the current booking's time slot
+        const currentTime = selectedBookingForReschedule.selectedTime;
+        const merged = availableSlots.includes(currentTime) ? availableSlots : [...availableSlots, currentTime];
+        const sorted = allTimeSlots.filter(slot => merged.includes(slot));
+        setAvailableTimeSlotsForReschedule(sorted);
+        return;
+      }
+
+      // Branch-based availability for non-online services via API
       const response = await axios.get(`${API_BASE_URL}/api/bookings/availability/${date}?branch=${selectedBookingForReschedule.branchLocation}`);
       
       if (response.data.success) {
@@ -539,19 +582,21 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
     } catch (error) {
       console.error('Error loading time slots:', error);
       // Fallback to local calculation
-      const existingBookings = patients.assessments.filter(booking => {
-        const bookingDate = new Date(booking.appointmentDate).toDateString();
-        const selectedDate = new Date(date).toDateString();
-        return bookingDate === selectedDate && 
-               booking.branchLocation === selectedBookingForReschedule.branchLocation &&
-               booking._id !== selectedBookingForReschedule._id &&
-               booking.status !== 'cancelled';
-      });
-
       const allTimeSlots = [
         '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
         '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
       ];
+      const existingBookings = patients.assessments.filter(booking => {
+        const bookingDate = new Date(booking.appointmentDate).toDateString();
+        const selectedDate = new Date(date).toDateString();
+        if (bookingDate !== selectedDate) return false;
+        if (booking._id === selectedBookingForReschedule._id) return false;
+        if (booking.status === 'cancelled' || booking.assessmentDeleted) return false;
+        if (rescheduleData.serviceType === 'Online Consultation') {
+          return booking.serviceType === 'Online Consultation';
+        }
+        return booking.branchLocation === selectedBookingForReschedule.branchLocation;
+      });
 
       const bookedSlots = existingBookings.map(booking => booking.selectedTime);
       const availableSlots = allTimeSlots.filter(slot => !bookedSlots.includes(slot));
@@ -898,6 +943,15 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
                         <i className="fas fa-clock"></i> Time Slots
                       </button>
                     </div>
+                    <div className="filter-group">
+                      <button
+                        className="btn-time-slots"
+                        onClick={(e) => { e.preventDefault(); navigate('/admin/online-consultations/slots'); }}
+                        title="View Online Consultation time slots"
+                      >
+                        <i className="fas fa-video"></i> Online Time Slots
+                      </button>
+                    </div>
                     {!isOnlinePage && (
                       <div className="filter-group">
                         <label>Service Type:</label>
@@ -938,6 +992,11 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
                           onChange={(e) => setSelectedDateForSlots(e.target.value)}
                           className="date-input"
                         />
+                        {isOnlinePage && new Date(selectedDateForSlots).getDay() !== 6 && (
+                          <small style={{ color: '#c05621', display: 'block', marginTop: '8px' }}>
+                            Online Consultation is available on Saturdays only.
+                          </small>
+                        )}
                       </div>
                       
                       <div className="time-slots-grid">

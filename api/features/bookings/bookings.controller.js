@@ -275,7 +275,7 @@ exports.getAvailableTimeSlots = async (req, res) => {
 // Reschedule booking
 exports.rescheduleBooking = async (req, res) => {
   try {
-    const { appointmentDate, selectedTime, adminNotes, reason } = req.body;
+    const { appointmentDate, selectedTime, adminNotes, reason, serviceType } = req.body;
     const bookingId = req.params.id;
 
     // Validate required fields
@@ -288,6 +288,13 @@ exports.rescheduleBooking = async (req, res) => {
 
     // Check if the new date is not in the past
     const newDate = new Date(appointmentDate);
+    // Enforce Saturdays for Online Consultation when switching types
+    if (serviceType === 'Online Consultation' && newDate.getDay() !== 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Online consultations are only available on Saturdays'
+      });
+    }
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -348,6 +355,7 @@ exports.rescheduleBooking = async (req, res) => {
         appointmentDate: new Date(appointmentDate),
         selectedTime: selectedTime,
         adminNotes: adminNotes || existingBooking.adminNotes,
+        serviceType: serviceType || existingBooking.serviceType,
         status: 'scheduled', // Mark as scheduled after rescheduling
         $push: { rescheduleHistory: rescheduleEntry },
         updatedAt: Date.now()

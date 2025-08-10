@@ -7,7 +7,7 @@ import FloatingElements from './FloatingElements';
 import Header from './Header';
 import AdminWalkInModal from './AdminWalkInModal';
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false }) => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState('blumentritt');
@@ -22,7 +22,7 @@ const AdminDashboard = () => {
   const [showTimeSlotView, setShowTimeSlotView] = useState(false);
   const [selectedDateForSlots, setSelectedDateForSlots] = useState(new Date().toISOString().split('T')[0]);
   const [professionFilter, setProfessionFilter] = useState('all');
-  const [serviceTypeFilter, setServiceTypeFilter] = useState('all');
+  const [serviceTypeFilter, setServiceTypeFilter] = useState(initialServiceTypeFilter);
   const [isWalkInOpen, setIsWalkInOpen] = useState(false);
   
   // Booking details modal state
@@ -898,18 +898,20 @@ const AdminDashboard = () => {
                         <i className="fas fa-clock"></i> Time Slots
                       </button>
                     </div>
-                    <div className="filter-group">
-                      <label>Service Type:</label>
-                      <select
-                        value={serviceTypeFilter}
-                        onChange={(e) => setServiceTypeFilter(e.target.value)}
-                        className="filter-select"
-                      >
-                        <option value="all">All</option>
-                        <option value="Initial Assessment">Initial Assessment</option>
-                        <option value="Online Consultation">Online Consultation</option>
-                      </select>
-                    </div>
+                    {!isOnlinePage && (
+                      <div className="filter-group">
+                        <label>Service Type:</label>
+                        <select 
+                          value={serviceTypeFilter} 
+                          onChange={(e) => setServiceTypeFilter(e.target.value)}
+                          className="filter-select"
+                        >
+                          <option value="all">All</option>
+                          <option value="Initial Assessment">Initial Assessment</option>
+                          <option value="Online Consultation">Online Consultation</option>
+                        </select>
+                      </div>
+                    )}
                     <div className="filter-group">
                       <label>Profession:</label>
                       <select

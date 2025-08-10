@@ -81,26 +81,31 @@ router.post('/walk-in-booking', auth, async (req, res) => {
     const monthAge = (today.getMonth() + 12 - birthDate.getMonth()) % 12;
     const childAge = `${age} years, ${monthAge} months`;
 
-    // Create a new booking
+    // Normalize guardian relation values to match schema
+    // Allowed by schema: 'Mother','Father','Grandmother','Grandfather','Guardian','Other'
+    let normalizedRelation = guardianRelation;
+    if (guardianRelation === 'Legal Guardian') normalizedRelation = 'Guardian';
+    if (guardianRelation === 'Grandparent') normalizedRelation = 'Guardian';
+
+    // Create a new booking (user is required by schema)
     const newBooking = new Booking({
+      user: req.userId,
       serviceType,
       branchLocation,
       guardianName,
-      guardianRelation: guardianRelation === 'Other' ? otherRelationship : guardianRelation,
+      guardianRelation: normalizedRelation === 'Other' ? 'Other' : normalizedRelation,
+      otherRelationship: normalizedRelation === 'Other' ? (otherRelationship || '') : '',
       guardianEmail,
       guardianPhone,
       guardianAddress,
       childName,
       childBirthday,
       childAge,
-      appointmentDate,
+      appointmentDate: new Date(appointmentDate),
       selectedTime,
       selectedProfessional,
       status: 'scheduled',
-      paymentStatus: 'pending',
-      isWalkIn: true,
-      createdAt: new Date(),
-      createdBy: req.userId
+      paymentStatus: 'pending'
     });
 
     // Save the booking
@@ -117,4 +122,4 @@ router.post('/walk-in-booking', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router; 

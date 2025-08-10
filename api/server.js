@@ -6,10 +6,17 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS Configuration for production
+// CORS Configuration
+const productionAllowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://lyksc.netlify.app',
+  'https://bicolpediatrictherapycenter-lyksc.com',
+  'https://www.bicolpediatrictherapycenter-lyksc.com'
+].filter(Boolean);
+
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL || 'https://lyks.netlify.app'
+  origin: process.env.NODE_ENV === 'production'
+    ? productionAllowedOrigins
     : 'http://localhost:3000',
   credentials: true,
   optionsSuccessStatus: 200

@@ -57,9 +57,13 @@ const PediatricianSection = () => {
                 background: '#ffffff',
                 position: 'relative'
               }}>
-                <img 
+                <img
                   src="./images/doctor/pediatrician.jpg"
                   alt="Dr. Marnie Moya-Prudencio - Neurodevelopmental Pediatrician"
+                  loading="lazy"
+                  decoding="async"
+                  width="600"
+                  height="800"
                   style={{
                     maxWidth: '100%',
                     height: 'auto',

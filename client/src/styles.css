@@ -7548,6 +7548,18 @@ body {
   }
 }
 
+/* Performance: Defer rendering of offscreen sections */
+.about,
+.pediatrician-section,
+.enhanced-slider-section,
+.services,
+.contact,
+.other-branches-section,
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 800px; /* Reserve space to prevent layout shifts */
+}
+
 /* ================================
    MOBILE TOUCH AND INTERACTION IMPROVEMENTS
    ================================ */

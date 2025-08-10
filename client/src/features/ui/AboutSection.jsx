@@ -72,10 +72,15 @@ const AboutSection = () => {
             {/* Founders Image moved from Hero Section */}
             <div className="about-founders-section scroll-scale-in delay-2">
               <div className="founders-image-container-about floating-gentle">
-                <img 
-                  src="/images/founders-lance-yuri.png" 
-                  alt="Lance and Yuri - Founders" 
+                <img
+                  src="/images/founders-lance-yuri.png"
+                  alt="Lance and Yuri - Founders"
                   className="founders-image-about hover-float"
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="high"
+                  width="360"
+                  height="270"
                   onError={handleImageError}
                 />
                 <div className="image-placeholder" style={{ display: 'none' }}>

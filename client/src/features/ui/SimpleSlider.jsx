@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ImageCarousel from './ImageCarousel';
 
 const SimpleSlider = ({ 
@@ -8,6 +8,23 @@ const SimpleSlider = ({
   showArrows = true,
   autoplaySpeed = 4000     // Slightly slower for better viewing
 }) => {
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setInView(true);
+        });
+      },
+      { root: null, rootMargin: '200px', threshold: 0.01 }
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, []);
   // Just add your image files here - no captions or descriptions needed
   const simpleImages = [
     {
@@ -33,7 +50,7 @@ const SimpleSlider = ({
   ];
 
   return (
-    <section className="enhanced-slider-section" style={{ 
+    <section ref={sectionRef} className="enhanced-slider-section" style={{ 
       padding: '80px 0', 
       background: 'linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 50%, #f1f8e9 100%)',
       position: 'relative',
@@ -203,13 +220,15 @@ const SimpleSlider = ({
                 `}
               </style>
               <div className="enhanced-slider">
-                <ImageCarousel 
-                  images={simpleImages}
-                  autoplay={true}
-                  autoplayInterval={autoplaySpeed}
-                  showDots={showDots}
-                  showArrows={showArrows}
-                />
+                {inView && (
+                  <ImageCarousel 
+                    images={simpleImages}
+                    autoplay={true}
+                    autoplayInterval={autoplaySpeed}
+                    showDots={showDots}
+                    showArrows={showArrows}
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const ImageCarousel = ({ 
   images, 
@@ -9,11 +9,13 @@ const ImageCarousel = ({
   className = ''
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(autoplay);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const containerRef = useRef(null);
+  const rafId = useRef(0);
 
-  // Auto-play functionality
+  // Auto-play functionality (runs only when visible)
   useEffect(() => {
     if (!isAutoPlaying || images.length <= 1) return;
 
@@ -46,36 +48,57 @@ const ImageCarousel = ({
     setIsAutoPlaying(autoplay);
   };
 
-  // Touch handlers for mobile swipe
-  const onTouchStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-    setIsAutoPlaying(false);
-  };
+  // Passive touch listeners + rAF-throttled move
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+    const handleStart = (e) => {
+      setTouchEnd(null);
+      setTouchStart(e.targetTouches[0].clientX);
+      setIsAutoPlaying(false);
+    };
+    const handleMove = (e) => {
+      const x = e.targetTouches[0].clientX;
+      cancelAnimationFrame(rafId.current);
+      rafId.current = requestAnimationFrame(() => setTouchEnd(x));
+    };
+    const handleEnd = () => {
+      if (!touchStart || !touchEnd) return;
+      const distance = touchStart - touchEnd;
+      const isLeftSwipe = distance > 50;
+      const isRightSwipe = distance < -50;
+      if (isLeftSwipe && currentIndex < images.length - 1) goToNext();
+      if (isRightSwipe && currentIndex > 0) goToPrevious();
+      setTimeout(() => setIsAutoPlaying(autoplay), 2000);
+    };
+    node.addEventListener('touchstart', handleStart, { passive: true });
+    node.addEventListener('touchmove', handleMove, { passive: true });
+    node.addEventListener('touchend', handleEnd, { passive: true });
+    return () => {
+      node.removeEventListener('touchstart', handleStart);
+      node.removeEventListener('touchmove', handleMove);
+      node.removeEventListener('touchend', handleEnd);
+      cancelAnimationFrame(rafId.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIndex, touchStart, touchEnd, autoplay, images.length]);
 
-  const onTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50;
-    const isRightSwipe = distance < -50;
-
-    if (isLeftSwipe && currentIndex < images.length - 1) {
-      goToNext();
-    }
-    if (isRightSwipe && currentIndex > 0) {
-      goToPrevious();
-    }
-    
-    // Resume autoplay after a delay
-    setTimeout(() => {
-      setIsAutoPlaying(autoplay);
-    }, 2000);
-  };
+  // Start/pause autoplay only when the carousel is in view
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setIsAutoPlaying(autoplay);
+          else setIsAutoPlaying(false);
+        });
+      },
+      { root: null, rootMargin: '100px', threshold: 0.01 }
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, [autoplay]);
 
   if (!images || images.length === 0) {
     return <div className="carousel-placeholder">No images available</div>;
@@ -89,9 +112,7 @@ const ImageCarousel = ({
     >
       <div 
         className="carousel-container"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
+        ref={containerRef}
       >
         <div className="carousel-track" style={{
           transform: `translateX(-${currentIndex * 100}%)`
@@ -102,6 +123,10 @@ const ImageCarousel = ({
                 src={image.src} 
                 alt={image.alt || `Slide ${index + 1}`}
                 className="carousel-image"
+                loading="lazy"
+                decoding="async"
+                width={image.width || 1000}
+                height={image.height || 500}
                 onError={(e) => {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';

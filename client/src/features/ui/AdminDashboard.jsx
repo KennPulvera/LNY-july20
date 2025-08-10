@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../../config';
 import '../../admin-styles.css';
 import FloatingElements from './FloatingElements';
 import Header from './Header';
+import AdminWalkInModal from './AdminWalkInModal';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -20,6 +21,9 @@ const AdminDashboard = () => {
   const [dateSort, setDateSort] = useState('upcoming'); // 'upcoming', 'recent', 'oldest'
   const [showTimeSlotView, setShowTimeSlotView] = useState(false);
   const [selectedDateForSlots, setSelectedDateForSlots] = useState(new Date().toISOString().split('T')[0]);
+  const [professionFilter, setProfessionFilter] = useState('all');
+  const [serviceTypeFilter, setServiceTypeFilter] = useState('all');
+  const [isWalkInOpen, setIsWalkInOpen] = useState(false);
   
   // Booking details modal state
   const [isBookingDetailsOpen, setIsBookingDetailsOpen] = useState(false);
@@ -98,6 +102,16 @@ const AdminDashboard = () => {
       filteredBookings = filteredBookings.filter(patient => patient.status === 'completed');
     } else if (statusFilter === 'not-completed') {
       filteredBookings = filteredBookings.filter(patient => patient.status !== 'completed');
+    }
+
+    // Apply service type filter
+    if (serviceTypeFilter !== 'all') {
+      filteredBookings = filteredBookings.filter(patient => (patient.serviceType || 'Initial Assessment') === serviceTypeFilter);
+    }
+
+    // Apply profession filter
+    if (professionFilter !== 'all') {
+      filteredBookings = filteredBookings.filter(patient => (patient.selectedProfessional || '') === professionFilter);
     }
 
     // Sort bookings
@@ -639,6 +653,13 @@ const AdminDashboard = () => {
     setCurrentView(view);
   };
 
+  const openWalkInModal = () => setIsWalkInOpen(true);
+  const closeWalkInModal = () => setIsWalkInOpen(false);
+  const handleWalkInSuccess = async () => {
+    await loadPatientData();
+    setIsWalkInOpen(false);
+  };
+
   // Make adminLogout available globally
   useEffect(() => {
     window.adminLogout = adminLogout;
@@ -814,6 +835,13 @@ const AdminDashboard = () => {
                 {patients.assessments.filter(p => (p.paymentReference || p.accountName) && !p.paymentDeleted).length}
               </span>
             </button>
+            <button
+              className="big-action-btn"
+              onClick={openWalkInModal}
+              title="Add a walk-in booking without creating a user account"
+            >
+              ➕ Add Walk-in Booking
+            </button>
           </div>
 
           {/* Assessment Bookings View */}
@@ -864,6 +892,27 @@ const AdminDashboard = () => {
                       >
                         <i className="fas fa-clock"></i> Time Slots
                       </button>
+                    </div>
+                    <div className="filter-group">
+                      <label>Service Type:</label>
+                      <select
+                        value={serviceTypeFilter}
+                        onChange={(e) => setServiceTypeFilter(e.target.value)}
+                        className="filter-select"
+                      >
+                        <option value="all">All</option>
+                        <option value="Initial Assessment">Initial Assessment</option>
+                        <option value="Online Consultation">Online Consultation</option>
+                      </select>
+                    </div>
+                    <div className="filter-group">
+                      <label>Profession:</label>
+                      <div className="profession-chips" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        <button type="button" className={`btn-action ${professionFilter === 'all' ? 'active' : ''}`} onClick={() => setProfessionFilter('all')}>All</button>
+                        <button type="button" className={`btn-action ${professionFilter === 'developmental-pediatrician' ? 'active' : ''}`} onClick={() => setProfessionFilter('developmental-pediatrician')}>Developmental Pediatrician</button>
+                        <button type="button" className={`btn-action ${professionFilter === 'occupational-therapist' ? 'active' : ''}`} onClick={() => setProfessionFilter('occupational-therapist')}>Occupational Therapist</button>
+                        <button type="button" className={`btn-action ${professionFilter === 'speech-language-pathologist' ? 'active' : ''}`} onClick={() => setProfessionFilter('speech-language-pathologist')}>Speech & Language Pathologist</button>
+                      </div>
                     </div>
                   </div>
                   
@@ -1138,6 +1187,14 @@ const AdminDashboard = () => {
           )}
         </div>
       </section>
+
+      {/* Walk-in Booking Modal */}
+      <AdminWalkInModal
+        isOpen={isWalkInOpen}
+        onClose={closeWalkInModal}
+        onSuccess={handleWalkInSuccess}
+        selectedBranch={selectedBranch}
+      />
 
       {/* Booking Details Modal */}
       {isBookingDetailsOpen && selectedBooking && (

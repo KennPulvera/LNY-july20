@@ -135,7 +135,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
       console.error('Error fetching time slots:', err);
       setError('Failed to fetch available time slots. Please try again.');
     }
-  }, [formData.appointmentDate, formData.selectedProfessional, formData.branchLocation, selectedBranch]);
+  }, [formData.appointmentDate, formData.branchLocation, selectedBranch]);
 
   useEffect(() => {
     if (formData.appointmentDate) {

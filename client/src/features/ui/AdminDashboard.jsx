@@ -171,7 +171,7 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
       if (isOnlinePage) {
         return (booking.serviceType === 'Online Consultation');
       }
-      return booking.branchLocation === selectedBranch;
+      return booking.branchLocation === selectedBranch && (booking.serviceType || 'Initial Assessment') !== 'Online Consultation';
     });
 
     const bookedSlots = bookingsForDate.map(booking => booking.selectedTime);
@@ -935,14 +935,16 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
                       </select>
                     </div>
                     
-                    <div className="filter-group">
-                      <button 
-                        className={`btn-time-slots ${showTimeSlotView ? 'active' : ''}`}
-                        onClick={() => setShowTimeSlotView(!showTimeSlotView)}
-                      >
-                        <i className="fas fa-clock"></i> Time Slots
-                      </button>
-                    </div>
+                    {!isOnlinePage && (
+                      <div className="filter-group">
+                        <button 
+                          className={`btn-time-slots ${showTimeSlotView ? 'active' : ''}`}
+                          onClick={() => setShowTimeSlotView(!showTimeSlotView)}
+                        >
+                          <i className="fas fa-clock"></i> Time Slots
+                        </button>
+                      </div>
+                    )}
                     <div className="filter-group">
                       <button
                         className="btn-time-slots"
@@ -981,8 +983,8 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
                     </div>
                   </div>
                   
-                  {/* Time Slot Availability View */}
-                  {showTimeSlotView && (
+                  {/* Time Slot Availability View (hidden on online page) */}
+                  {showTimeSlotView && !isOnlinePage && (
                     <div className="time-slot-availability">
                       <div className="slot-date-picker">
                         <label>View availability for:</label>

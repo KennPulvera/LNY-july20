@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../../config';
 
@@ -53,34 +53,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
   ];
 
   // Fetch professionals when the component mounts
-  useEffect(() => {
-    if (isOpen) {
-      fetchProfessionals();
-    }
-  }, [isOpen]);
-
-  // Calculate age when birthday changes
-  useEffect(() => {
-    if (formData.childBirthday) {
-      calculateAge(formData.childBirthday);
-    }
-  }, [formData.childBirthday]);
-
-  // Update available dates when service type or professional changes
-  useEffect(() => {
-    if (formData.serviceType && formData.selectedProfessional) {
-      generateAvailableDates();
-    }
-  }, [formData.serviceType, formData.selectedProfessional]);
-
-  // Fetch time slots when appointment date changes
-  useEffect(() => {
-    if (formData.appointmentDate) {
-      fetchAvailableTimeSlots();
-    }
-  }, [formData.appointmentDate]);
-
-  const fetchProfessionals = async () => {
+  const fetchProfessionals = useCallback(async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/admin/professionals`, {
         headers: {
@@ -92,31 +65,38 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
       console.error('Error fetching professionals:', err);
       setError('Failed to fetch professionals. Please try again.');
     }
-  };
+  }, []);
 
-  const generateAvailableDates = () => {
+  useEffect(() => {
+    if (isOpen) {
+      fetchProfessionals();
+    }
+  }, [isOpen, fetchProfessionals]);
+
+  // Calculate age when birthday changes
+  useEffect(() => {
+    if (formData.childBirthday) {
+      calculateAge(formData.childBirthday);
+    }
+  }, [formData.childBirthday]);
+
+  // Update available dates when service type or professional changes
+  const generateAvailableDates = useCallback(() => {
     const dates = [];
     const today = new Date();
     const maxDate = new Date();
     maxDate.setDate(today.getDate() + 60); // Allow booking up to 60 days in advance
     
-    // For Online Consultation, only allow Saturdays
     const isOnlineConsultation = formData.serviceType === 'Online Consultation';
     
     for (let date = new Date(today); date <= maxDate; date.setDate(date.getDate() + 1)) {
-      // Skip dates in the past
       if (date < today) continue;
-      
-      // For Online Consultation, only include Saturdays (day 6)
-      if (isOnlineConsultation && date.getDay() !== 6) continue;
-      
+      if (isOnlineConsultation && date.getDay() !== 6) continue; // Saturdays only
       const dateString = date.toISOString().split('T')[0];
       dates.push(dateString);
     }
     
     setAvailableDates(dates);
-    
-    // Reset appointment date if it's no longer valid
     if (formData.appointmentDate && !dates.includes(formData.appointmentDate)) {
       setFormData({
         ...formData,
@@ -124,9 +104,16 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
         selectedTime: ''
       });
     }
-  };
+  }, [formData.serviceType, formData.appointmentDate, formData]);
 
-  const fetchAvailableTimeSlots = async () => {
+  useEffect(() => {
+    if (formData.serviceType && formData.selectedProfessional) {
+      generateAvailableDates();
+    }
+  }, [formData.serviceType, formData.selectedProfessional, generateAvailableDates]);
+
+  // Fetch time slots when appointment date changes
+  const fetchAvailableTimeSlots = useCallback(async () => {
     try {
       const response = await axios.get(
         `${API_BASE_URL}/bookings/available-slots?date=${formData.appointmentDate}&professional=${formData.selectedProfessional}`,
@@ -141,7 +128,15 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
       console.error('Error fetching time slots:', err);
       setError('Failed to fetch available time slots. Please try again.');
     }
-  };
+  }, [formData.appointmentDate, formData.selectedProfessional]);
+
+  useEffect(() => {
+    if (formData.appointmentDate) {
+      fetchAvailableTimeSlots();
+    }
+  }, [formData.appointmentDate, fetchAvailableTimeSlots]);
+
+  
 
   const calculateAge = (birthday) => {
     const birthDate = new Date(birthday);

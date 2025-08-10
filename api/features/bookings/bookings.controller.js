@@ -3,18 +3,23 @@ const Booking = require('./bookings.model');
 // Create a new booking
 exports.createBooking = async (req, res) => {
   try {
-    const { appointmentDate, selectedTime, branchLocation } = req.body;
-    
-    // Validate that the time slot is not already booked
-    const existingBooking = await Booking.findOne({
+    const { appointmentDate, selectedTime, branchLocation, serviceType } = req.body;
+
+    // Validate that the time slot is not already booked, scoped by service type
+    const baseDateQuery = {
       appointmentDate: {
         $gte: new Date(appointmentDate),
         $lt: new Date(new Date(appointmentDate).getTime() + 24 * 60 * 60 * 1000)
       },
       selectedTime: selectedTime,
-      branchLocation: branchLocation,
-      status: { $ne: 'cancelled' } // Exclude cancelled bookings
-    });
+      status: { $ne: 'cancelled' }
+    };
+
+    const conflictQuery = (serviceType === 'Online Consultation')
+      ? { ...baseDateQuery, serviceType: 'Online Consultation' }
+      : { ...baseDateQuery, branchLocation: branchLocation, serviceType: { $ne: 'Online Consultation' } };
+
+    const existingBooking = await Booking.findOne(conflictQuery);
 
     if (existingBooking) {
       return res.status(409).json({
@@ -23,7 +28,8 @@ exports.createBooking = async (req, res) => {
         conflictDetails: {
           date: appointmentDate,
           time: selectedTime,
-          branch: branchLocation
+          branch: branchLocation,
+          serviceType
         }
       });
     }
@@ -314,22 +320,27 @@ exports.rescheduleBooking = async (req, res) => {
       });
     }
 
-    // Check if the new time slot is available for the same branch
-    const conflictingBookings = await Booking.find({
+    // Check if the new time slot is available, respecting online vs non-online rules
+    const rescheduleBaseQuery = {
       appointmentDate: {
         $gte: new Date(appointmentDate),
         $lt: new Date(new Date(appointmentDate).getTime() + 24 * 60 * 60 * 1000)
       },
-      branchLocation: existingBooking.branchLocation,
       selectedTime: selectedTime,
       status: { $ne: 'cancelled' },
-      _id: { $ne: bookingId } // Exclude current booking
-    });
+      _id: { $ne: bookingId }
+    };
+
+    const conflictingBookings = await Booking.find(
+      (serviceType === 'Online Consultation' || existingBooking.serviceType === 'Online Consultation')
+        ? { ...rescheduleBaseQuery, serviceType: 'Online Consultation' }
+        : { ...rescheduleBaseQuery, branchLocation: existingBooking.branchLocation, serviceType: { $ne: 'Online Consultation' } }
+    );
 
     if (conflictingBookings.length > 0) {
       return res.status(409).json({
         success: false,
-        message: 'The selected time slot is already booked for this branch'
+        message: 'The selected time slot is already booked'
       });
     }
 

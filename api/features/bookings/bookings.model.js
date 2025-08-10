@@ -132,20 +132,38 @@ bookingSchema.pre('save', function(next) {
   next();
 });
 
-// Compound index to prevent double booking for the same time slot
-// This ensures no two active bookings can exist for the same date, time, and branch
+// Enforce uniqueness differently for online vs non-online services
+// 1) Branch-based services (non-online): unique per branch/date/time
 bookingSchema.index(
-  { 
-    appointmentDate: 1, 
-    selectedTime: 1, 
-    branchLocation: 1 
+  {
+    appointmentDate: 1,
+    selectedTime: 1,
+    branchLocation: 1
   },
-  { 
+  {
     unique: true,
-    partialFilterExpression: { 
-      status: { $ne: 'cancelled' } 
+    partialFilterExpression: {
+      status: { $ne: 'cancelled' },
+      serviceType: { $ne: 'Online Consultation' }
     },
-    name: 'prevent_double_booking'
+    name: 'unique_branch_time_non_online'
+  }
+);
+
+// 2) Online Consultation: unique globally per date/time (ignore branch)
+bookingSchema.index(
+  {
+    appointmentDate: 1,
+    selectedTime: 1,
+    serviceType: 1
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: { $ne: 'cancelled' },
+      serviceType: 'Online Consultation'
+    },
+    name: 'unique_online_time_global'
   }
 );
 

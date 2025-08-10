@@ -21,6 +21,18 @@ async function fixMissingFields() {
 
     console.log(`📊 Found ${bookingsToUpdate.length} bookings to update`);
 
+    // Ensure new indexes exist and old index is dropped if present
+    try {
+      console.log('🔧 Updating booking indexes to separate online vs branch uniqueness...');
+      await Booking.collection.dropIndex('prevent_double_booking');
+      console.log('🗑️ Dropped old index prevent_double_booking');
+    } catch (e) {
+      console.log('ℹ️ Old index prevent_double_booking not found or already removed');
+    }
+    // Trigger model to create new indexes
+    await Booking.syncIndexes();
+    console.log('✅ Synced new indexes');
+
     if (bookingsToUpdate.length === 0) {
       console.log('✅ All bookings already have the required fields');
       return;

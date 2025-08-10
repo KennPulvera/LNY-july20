@@ -48,15 +48,19 @@ router.post('/walk-in-booking', auth, async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Check if the selected time slot is available
-    const existingBooking = await Booking.findOne({
+    // Check if the selected time slot is available (respect online vs non-online)
+    const baseQuery = {
       appointmentDate,
       selectedTime,
-      branchLocation,
-      selectedProfessional,
       status: { $ne: 'cancelled' },
       assessmentDeleted: { $ne: true }
-    });
+    };
+
+    const existingBooking = await Booking.findOne(
+      serviceType === 'Online Consultation'
+        ? { ...baseQuery, serviceType: 'Online Consultation' }
+        : { ...baseQuery, branchLocation, serviceType: { $ne: 'Online Consultation' }, selectedProfessional }
+    );
 
     if (existingBooking) {
       return res.status(400).json({ message: 'This time slot is already booked' });

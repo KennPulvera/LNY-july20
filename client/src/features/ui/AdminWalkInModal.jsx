@@ -104,7 +104,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
         selectedTime: ''
       });
     }
-  }, [formData.serviceType, formData.appointmentDate, formData]);
+  }, [formData]);
 
   useEffect(() => {
     if (formData.serviceType && formData.selectedProfessional) {

@@ -26,7 +26,7 @@ router.patch('/:id/payment', bookingsController.updatePaymentStatus);
 router.put('/:id', bookingsController.updateBooking);
 
 // Reschedule booking (admin only)
-router.patch('/:id/reschedule', bookingsController.rescheduleBooking);
+router.patch('/:id/reschedule', auth, bookingsController.rescheduleBooking);
 
 // Delete booking
 router.delete('/:id', bookingsController.deleteBooking);

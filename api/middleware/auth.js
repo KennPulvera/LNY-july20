@@ -31,6 +31,10 @@ const auth = async (req, res, next) => {
 
     req.userId = decoded.userId;
     req.user = user;
+    req.userRole = user.role;
+    if (user.role === 'admin') {
+      req.isAdmin = true;
+    }
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);

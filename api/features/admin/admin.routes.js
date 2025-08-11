@@ -56,10 +56,11 @@ router.post('/walk-in-booking', auth, async (req, res) => {
       assessmentDeleted: { $ne: true }
     };
 
+    // Admin can double-book non-online; only block if it's an Online Consultation conflict
     const existingBooking = await Booking.findOne(
       serviceType === 'Online Consultation'
         ? { ...baseQuery, serviceType: 'Online Consultation' }
-        : { ...baseQuery, branchLocation, serviceType: { $ne: 'Online Consultation' }, selectedProfessional }
+        : null
     );
 
     if (existingBooking) {

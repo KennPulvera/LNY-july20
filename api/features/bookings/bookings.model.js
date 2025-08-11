@@ -133,7 +133,7 @@ bookingSchema.pre('save', function(next) {
 });
 
 // Enforce uniqueness differently for online vs non-online services
-// 1) Branch-based services (non-online): unique per branch/date/time
+// 1) Branch-based services (non-online): index per branch/date/time (not unique to allow admin double-booking)
 bookingSchema.index(
   {
     appointmentDate: 1,
@@ -141,12 +141,11 @@ bookingSchema.index(
     branchLocation: 1
   },
   {
-    unique: true,
     partialFilterExpression: {
       status: { $ne: 'cancelled' },
       serviceType: { $ne: 'Online Consultation' }
     },
-    name: 'unique_branch_time_non_online'
+    name: 'idx_branch_time_non_online'
   }
 );
 

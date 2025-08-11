@@ -19,8 +19,10 @@ exports.createBooking = async (req, res) => {
       ? { ...baseDateQuery, serviceType: 'Online Consultation' }
       : { ...baseDateQuery, branchLocation: branchLocation, serviceType: { $ne: 'Online Consultation' } };
 
+    // For user bookings, we still block if conflict exists (hide times via availability API on client)
     const existingBooking = await Booking.findOne(conflictQuery);
 
+    // For user booking creation, always block conflicts. Admin clients can use walk-in/admin routes to bypass.
     if (existingBooking) {
       return res.status(409).json({
         success: false,
@@ -241,14 +243,15 @@ exports.getAvailableTimeSlots = async (req, res) => {
     const { date } = req.params;
     const { branch } = req.query;
     
-    // Get all bookings for the specified date and branch
+    // Get all bookings for the specified date and branch, excluding online consultation bookings
     const existingBookings = await Booking.find({
       appointmentDate: {
         $gte: new Date(date),
         $lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000)
       },
       branchLocation: branch,
-      status: { $ne: 'cancelled' }
+      status: { $ne: 'cancelled' },
+      serviceType: { $ne: 'Online Consultation' }
     });
     
     // Define all available time slots
@@ -337,7 +340,9 @@ exports.rescheduleBooking = async (req, res) => {
         : { ...rescheduleBaseQuery, branchLocation: existingBooking.branchLocation, serviceType: { $ne: 'Online Consultation' } }
     );
 
-    if (conflictingBookings.length > 0) {
+    // Allow admins to double-book non-online slots via reschedule by bypassing conflict if a flag is provided
+    const isAdminBypass = req.userRole === 'admin' || req.isAdmin === true; // middleware may set this
+    if (conflictingBookings.length > 0 && !(isAdminBypass && (serviceType || existingBooking.serviceType) !== 'Online Consultation')) {
       return res.status(409).json({
         success: false,
         message: 'The selected time slot is already booked'

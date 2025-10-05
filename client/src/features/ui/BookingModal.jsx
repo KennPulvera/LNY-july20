@@ -21,7 +21,6 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
   });
 
   const [ageDisplay, setAgeDisplay] = useState('Age will be calculated automatically');
-  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [autoSaveStatus, setAutoSaveStatus] = useState('idle'); // 'idle', 'saving', 'saved'
@@ -39,11 +38,6 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
         // If there's a saved birthday, calculate age
         if (parsedData.childBirthday) {
           calculateAge(parsedData.childBirthday);
-        }
-        
-        // If there's a saved date and branch, load time slots
-        if (parsedData.appointmentDate && parsedData.branchLocation) {
-          loadTimeSlots(parsedData.appointmentDate);
         }
       } catch (error) {
         console.error('Error loading saved form data:', error);
@@ -103,9 +97,6 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
         appointmentDate: '',
         selectedTime: ''
       }));
-      
-      // Reset available time slots
-      setAvailableTimeSlots([]);
     }
   };
 
@@ -160,35 +151,10 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
     calculateAge(e.target.value);
   };
 
-  const loadTimeSlots = async (date) => {
-    if (!date || !formData.branchLocation) return;
-    
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/bookings/availability/${date}?branch=${formData.branchLocation}&professional=${formData.selectedProfessional}`);
-      if (response.data.success) {
-        setAvailableTimeSlots(response.data.availableSlots);
-      }
-    } catch (error) {
-      console.error('Error loading time slots:', error);
-      // Fallback to default time slots if API fails
-      setAvailableTimeSlots([
-        '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
-        '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
-      ]);
-    }
-  };
-
   // Professional availability checking removed as requested - secretary will contact if needed
 
   const handleProfessionalChange = (e) => {
     handleChange(e);
-    // Professional availability checking removed - secretary will contact if needed
-  };
-
-  const handleDateChange = (e) => {
-    const date = e.target.value;
-    handleChange(e);
-    loadTimeSlots(date);
     // Professional availability checking removed - secretary will contact if needed
   };
 
@@ -209,23 +175,8 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
       selectedProfessional: ''
     });
     setAgeDisplay('Age will be calculated automatically');
-    setAvailableTimeSlots([]);
     setAutoSaveStatus('idle');
     setHasUnsavedChanges(false);
-  };
-
-  const validateTimeSlotAvailability = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/bookings/availability/${formData.appointmentDate}?branch=${formData.branchLocation}`);
-      if (response.data.success) {
-        const availableSlots = response.data.availableSlots;
-        return availableSlots.includes(formData.selectedTime);
-      }
-      return false;
-    } catch (error) {
-      console.error('Error checking time slot availability:', error);
-      return false; // Assume unavailable if check fails
-    }
   };
 
   const handleSubmit = async (e) => {

@@ -217,13 +217,6 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
       // Special handling for double-booking error
       if (error.response?.status === 409) {
         setError('⚠️ ' + errorMessage + ' Please refresh the page and select a different time slot.');
-        
-        // Refresh available time slots to show current availability
-        if (formData.appointmentDate && formData.branchLocation) {
-          setTimeout(() => {
-            loadTimeSlots(formData.appointmentDate);
-          }, 1000);
-        }
       } else {
         setError(errorMessage);
       }

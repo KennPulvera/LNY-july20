@@ -1,0 +1,16 @@
+{
+  "short_name": "Lance Yuri Kids Spot",
+  "name": "Lance and Yuri Kids Spot Naga City - Pediatric Therapy Center",
+  "description": "Pediatric therapy center for children with special needs",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#FF6B35",
+  "background_color": "#FFF9F7"
+} 

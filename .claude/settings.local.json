@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run install-all:*)",
+      "Bash(curl http://localhost:5000/api/health)",
+      "Bash(curl -X POST http://localhost:5000/api/bookings -H \"Content-Type: application/json\" -d \"{\"\"branchLocation\"\":\"\"blumentritt\"\",\"\"guardianName\"\":\"\"Test Guardian\"\",\"\"guardianEmail\"\":\"\"test@example.com\"\",\"\"guardianPhone\"\":\"\"09123456789\"\",\"\"guardianRelation\"\":\"\"Mother\"\",\"\"guardianAddress\"\":\"\"Test Address\"\",\"\"childName\"\":\"\"Test Child\"\",\"\"childBirthday\"\":\"\"2020-01-01\"\",\"\"childAge\"\":\"\"4 years\"\",\"\"appointmentDate\"\":\"\"2025-10-15\"\",\"\"selectedTime\"\":\"\"9:00 AM\"\",\"\"selectedProfessional\"\":\"\"developmental-pediatrician\"\"}\")",
+      "Bash(curl http://localhost:5000/api/bookings)",
+      "Bash(curl -X POST http://localhost:5000/api/bookings -H \"Content-Type: application/json\" -d \"{\"\"branchLocation\"\":\"\"naga-blumentritt\"\",\"\"guardianName\"\":\"\"Test User\"\",\"\"guardianEmail\"\":\"\"test@test.com\"\",\"\"guardianPhone\"\":\"\"09123456789\"\",\"\"guardianRelation\"\":\"\"Mother\"\",\"\"guardianAddress\"\":\"\"Test Address\"\",\"\"childName\"\":\"\"Test Child\"\",\"\"childBirthday\"\":\"\"2020-01-01\"\",\"\"childAge\"\":\"\"4 years\"\",\"\"appointmentDate\"\":\"\"2025-10-10T00:00:00.000Z\"\",\"\"selectedTime\"\":\"\"To be scheduled\"\",\"\"selectedProfessional\"\":\"\"developmental-pediatrician\"\"}\")",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

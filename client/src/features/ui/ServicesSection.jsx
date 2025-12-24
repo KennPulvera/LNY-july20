@@ -181,7 +181,7 @@ const ServicesSection = ({ onBookClick }) => {
                   position: 'relative'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                    <div style={{
+                    <div className="services-team-icon" style={{
                       width: '45px',
                       height: '45px',
                       background: `linear-gradient(135deg, ${member.accent}, ${member.accent}dd)`,
@@ -281,7 +281,7 @@ const ServicesSection = ({ onBookClick }) => {
                   position: 'relative'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
-                    <div style={{
+                    <div className="services-program-icon" style={{
                       width: '45px',
                       height: '45px',
                       background: `linear-gradient(135deg, ${service.accent}, ${service.accent}dd)`,

@@ -52,7 +52,7 @@ const AboutSection = () => {
       <div className="container">
         <div className="about-content">
           <div className="about-text">
-            <h2 ref={titleRef} className="animated-section-title scroll-fade-in">About Lance Yuri Kids SPOT Center 💝</h2>
+            <h2 ref={titleRef} className="animated-section-title scroll-fade-in">About Lance Yuri Kids SPOT Center</h2>
             
             <p ref={textRef} className="scroll-slide-up delay-1">
               <strong>Lance Yuri Kids SPOT Center is a pediatric center for children with special needs.</strong> 
@@ -61,9 +61,9 @@ const AboutSection = () => {
               To educate and inform the adults involved with these children to improved understanding and 
               acceptance of their unique abilities and challenges.
               <br /><br />
-              <strong>Our Commitment 🌟</strong> Every child deserves the opportunity to reach their full potential. We are committed to 
-              providing quality therapy services that make a meaningful difference in children's lives 
-              and their families. 🎯 💪 🌈
+              <strong>Our Commitment</strong> Every child deserves the opportunity to reach their full potential. We are committed to
+              providing quality therapy services that make a meaningful difference in children's lives
+              and their families.
             </p>
 
           </div>
@@ -95,7 +95,7 @@ const AboutSection = () => {
 
             {/* Moved from Hero Section */}
             <div ref={infoCardRef} className="info-card magic-info-card scroll-slide-right delay-3">
-              <h3 className="glow-text">What Sets Us Apart 🌈</h3>
+              <h3 className="glow-text">What Sets Us Apart</h3>
               <div className="info-list">
                 <div className="info-item slide-in-right animated-item delay-4">
                   <i className="fas fa-award pulse-icon"></i>
@@ -117,11 +117,6 @@ const AboutSection = () => {
                   <i className="fas fa-chart-line pulse-icon"></i>
                   <span>Progress Monitoring</span>
                 </div>
-              </div>
-              <div className="card-decorations">
-                <span className="decoration-star floating-decoration">⭐</span>
-                <span className="decoration-heart floating-decoration delay-1">💖</span>
-                <span className="decoration-smile floating-decoration delay-2">😊</span>
               </div>
             </div>
 

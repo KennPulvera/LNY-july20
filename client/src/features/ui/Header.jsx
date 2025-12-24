@@ -11,7 +11,7 @@ const Header = ({ isAdmin = false, showBookingButton = true, onBookClick, onLogi
     <nav className="navbar">
       <div className="nav-container">
         <div className="logo">
-          <h2>🏠 Lance and Yuri Kids Spot Naga City</h2>
+          <h2>Lance and Yuri Kids Spot Naga City</h2>
           {!isAdmin && <span className="experience-tag">since 2009</span>}
           {isAdmin && <span className="admin-badge">Admin</span>}
         </div>
@@ -21,16 +21,16 @@ const Header = ({ isAdmin = false, showBookingButton = true, onBookClick, onLogi
             {/* Navigation Menu - Dropdown */}
             <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
               <li className="nav-item">
-                <a href="#home" className="nav-link">🏠 Home</a>
+                <a href="#home" className="nav-link">Home</a>
               </li>
               <li className="nav-item">
-                <a href="#services" className="nav-link">🎯 Services</a>
+                <a href="#services" className="nav-link">Services</a>
               </li>
               <li className="nav-item">
-                <a href="#about" className="nav-link">💝 About</a>
+                <a href="#about" className="nav-link">About</a>
               </li>
               <li className="nav-item">
-                <a href="#contact" className="nav-link">📞 Contact</a>
+                <a href="#contact" className="nav-link">Contact</a>
               </li>
             </ul>
 
@@ -39,13 +39,8 @@ const Header = ({ isAdmin = false, showBookingButton = true, onBookClick, onLogi
               {showBookingButton && (
                 <button className="nav-btn-external magic-button" onClick={onBookClick}>
                   <span className="btn-text">
-                    📅 Book Assessment
+                    Book Assessment
                   </span>
-                  <div className="btn-sparkles">
-                    <span className="sparkle">✨</span>
-                    <span className="sparkle">⭐</span>
-                    <span className="sparkle">💫</span>
-                  </div>
                 </button>
               )}
               <button onClick={onLoginClick} className="admin-login-btn" title="Admin Login">

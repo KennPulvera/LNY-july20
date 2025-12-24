@@ -32,7 +32,7 @@ const HeroSection = ({ onBookClick }) => {
       <div className="hero-simplified-container">
         <div className="hero-simplified-content">
           <h1 className="hero-title-large">
-            Pediatric Therapy Center for Children with Special Needs🌟
+            Pediatric Therapy Center for Children with Special Needs
           </h1>
 
           <div className="hero-button-large">

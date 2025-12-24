@@ -2549,6 +2549,16 @@ body {
 
 /* Services grid uses default styling */
 
+/* Services section grid styles - Desktop default: 2 columns */
+.services-main-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.services-specialties-grid,
+.services-benefits-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
 .service-icon {
     width: 80px;
     height: 80px;
@@ -6374,7 +6384,19 @@ body {
         min-height: 430px !important;
         overflow-y: visible !important;
     }
-    
+
+    /* Services Section - Single column for specialties/benefits on mobile */
+    .services-team-section .services-specialties-grid,
+    .services-programs-section .services-benefits-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Additional specificity to override inline styles */
+    div.services-specialties-grid[style],
+    div.services-benefits-grid[style] {
+        grid-template-columns: 1fr !important;
+    }
+
     /* Section Headers Mobile Compact */
     h2 {
         font-size: 1.8rem !important;
@@ -6972,7 +6994,37 @@ body {
   section {
     padding: 30px 0 !important;
   }
-  
+
+  /* Services sections mobile optimization */
+  .services-team-section,
+  .services-programs-section {
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  .services-team-section > div:last-child,
+  .services-programs-section > div:last-child {
+    max-height: 400px !important;
+  }
+
+  /* Services grid mobile layout - stack on mobile */
+  .services-main-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Services Section - Single column for specialties/benefits on mobile */
+  .services-team-section .services-specialties-grid,
+  .services-programs-section .services-benefits-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Additional specificity to override inline styles */
+  div.services-specialties-grid[style],
+  div.services-benefits-grid[style] {
+    grid-template-columns: 1fr !important;
+  }
+
   .hero {
     padding: 60px 0 30px !important;
   }
@@ -7082,24 +7134,98 @@ body {
   
   /* Services section mobile improvements */
   .services-main-grid {
+    grid-template-columns: 1fr !important;
     padding: 0 8px !important;
     gap: 15px !important;
   }
-  
+
+  /* Services Section - Single column for specialties/benefits on small mobile */
+  .services-team-section .services-specialties-grid,
+  .services-programs-section .services-benefits-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Additional specificity to override inline styles */
+  div.services-specialties-grid[style],
+  div.services-benefits-grid[style] {
+    grid-template-columns: 1fr !important;
+  }
+
   /* Enhanced slider mobile */
+  .enhanced-slider-section {
+    padding: 20px 0 !important;
+  }
+
   .enhanced-slider-section .container {
     padding: 0 10px;
   }
-  
+
+  /* Slider wrapper mobile fixes */
+  .slider-wrapper {
+    padding: 8px !important;
+    border-radius: 15px !important;
+  }
+
+  /* Hide decorative corners on mobile to save space */
+  .decorative-corner {
+    display: none !important;
+  }
+
+  /* Section header text compact */
+  .enhanced-slider-section h2 {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .enhanced-slider-section p {
+    font-size: 0.9rem !important;
+  }
+
+  /* Fix carousel height on mobile - override inline styles */
+  .enhanced-slider .carousel-container {
+    height: 250px !important;
+  }
+
+  .slider-wrapper > div {
+    height: 250px !important;
+  }
+
+  .enhanced-slider .carousel-slide {
+    height: 250px !important;
+  }
+
+  .enhanced-slider .carousel-track {
+    height: 250px !important;
+  }
+
   /* Hero button compact */
   .magic-button-xl {
     padding: 10px 20px !important;
     font-size: 0.9rem !important;
   }
-  
+
   /* Make carousel images more compact */
   .carousel-image {
     object-fit: cover;
+    height: 100% !important;
+  }
+}
+
+/* Safe Area Insets for Notched Devices (iPhone X+) */
+@supports (padding: max(0px)) {
+  .navbar,
+  .floating-cta-container,
+  .floating-cta-button {
+    padding-left: max(env(safe-area-inset-left), 20px);
+    padding-right: max(env(safe-area-inset-right), 20px);
+  }
+
+  .floating-cta-container {
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
+  }
+
+  body {
+    padding-bottom: max(env(safe-area-inset-bottom), 70px);
   }
 }
 

@@ -132,7 +132,6 @@ const ServicesSection = ({ onBookClick }) => {
         {/* Main Content Grid - Fixed Equal Containers */}
         <div className="services-main-grid" style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
           gap: '40px',
           maxWidth: '1300px',
           margin: '0 auto',
@@ -140,14 +139,14 @@ const ServicesSection = ({ onBookClick }) => {
         }}>
           
           {/* Professional Team */}
-          <div className="services-team-section" style={{ height: '600px' }}>
+          <div className="services-team-section" style={{ minHeight: '600px', height: 'auto' }}>
             <div style={{
               background: 'linear-gradient(135deg, #ff6b35, #ff8a65)',
               color: 'white',
               padding: '18px',
               borderRadius: '18px 18px 0 0',
               textAlign: 'center',
-              height: '70px',
+              minHeight: '70px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center'
@@ -163,13 +162,13 @@ const ServicesSection = ({ onBookClick }) => {
                 Licensed specialists with proven expertise
               </p>
             </div>
-            
+
             <div style={{
               background: 'white',
               borderRadius: '0 0 18px 18px',
               padding: '20px',
               boxShadow: '0 15px 35px rgba(255, 87, 34, 0.1)',
-              height: '530px',
+              maxHeight: '530px',
               overflowY: 'auto'
             }}>
               {team.map((member, index) => (
@@ -207,26 +206,28 @@ const ServicesSection = ({ onBookClick }) => {
                         {member.title}
                       </h4>
                       
-                      <div style={{
+                      <div className="services-specialties-grid" style={{
                         display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '6px'
+                        gap: '8px'
                       }}>
                         {member.specialties.map((specialty, i) => (
                           <div key={i} style={{
                             display: 'flex',
-                            alignItems: 'center',
-                            fontSize: '0.8rem',
-                            color: '#555'
+                            alignItems: 'flex-start',
+                            fontSize: '0.75rem',
+                            color: '#555',
+                            lineHeight: '1.3'
                           }}>
                             <div style={{
                               width: '5px',
                               height: '5px',
                               background: member.accent,
                               borderRadius: '50%',
-                              marginRight: '6px'
+                              marginRight: '6px',
+                              marginTop: '5px',
+                              flexShrink: 0
                             }}></div>
-                            {specialty}
+                            <span style={{ wordBreak: 'break-word' }}>{specialty}</span>
                           </div>
                         ))}
                       </div>
@@ -238,14 +239,14 @@ const ServicesSection = ({ onBookClick }) => {
           </div>
 
           {/* Programs & Services */}
-          <div className="services-programs-section" style={{ height: '600px' }}>
+          <div className="services-programs-section" style={{ minHeight: '600px', height: 'auto' }}>
             <div style={{
               background: 'linear-gradient(135deg, #ffab40, #ffc107)',
               color: 'white',
               padding: '18px',
               borderRadius: '18px 18px 0 0',
               textAlign: 'center',
-              height: '70px',
+              minHeight: '70px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center'
@@ -261,13 +262,13 @@ const ServicesSection = ({ onBookClick }) => {
                 Evidence-based therapeutic interventions
               </p>
             </div>
-            
+
             <div style={{
               background: 'white',
               borderRadius: '0 0 18px 18px',
               padding: '20px',
               boxShadow: '0 15px 35px rgba(255, 171, 64, 0.1)',
-              height: '530px',
+              maxHeight: '530px',
               overflowY: 'auto'
             }}>
               {services.map((service, index) => (
@@ -340,26 +341,28 @@ const ServicesSection = ({ onBookClick }) => {
                         </div>
                       )}
                       
-                      <div style={{
+                      <div className="services-benefits-grid" style={{
                         display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '5px'
+                        gap: '8px'
                       }}>
                         {service.benefits.map((benefit, i) => (
                           <div key={i} style={{
                             display: 'flex',
-                            alignItems: 'center',
-                            fontSize: '0.75rem',
-                            color: '#555'
+                            alignItems: 'flex-start',
+                            fontSize: '0.72rem',
+                            color: '#555',
+                            lineHeight: '1.3'
                           }}>
                             <div style={{
                               width: '4px',
                               height: '4px',
                               background: service.accent,
                               borderRadius: '50%',
-                              marginRight: '5px'
+                              marginRight: '5px',
+                              marginTop: '5px',
+                              flexShrink: 0
                             }}></div>
-                            {benefit}
+                            <span style={{ wordBreak: 'break-word' }}>{benefit}</span>
                           </div>
                         ))}
                       </div>

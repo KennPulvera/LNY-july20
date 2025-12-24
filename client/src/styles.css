@@ -2559,6 +2559,19 @@ body {
   grid-template-columns: 1fr 1fr;
 }
 
+/* Services Section - Responsive Typography */
+.services-section-title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+}
+
+.services-section-subtitle {
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+}
+
+.services-card-title {
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+}
+
 .service-icon {
     width: 80px;
     height: 80px;
@@ -6385,6 +6398,39 @@ body {
         overflow-y: visible !important;
     }
 
+    /* Services Section - Reduce padding on tablet/mobile */
+    .services {
+        padding: 40px 0 50px 0 !important;
+    }
+
+    /* Reduce container heights for tablet */
+    .services-team-section,
+    .services-programs-section {
+        min-height: 400px !important;
+    }
+
+    .services-team-section > div:first-child,
+    .services-programs-section > div:first-child {
+        min-height: 60px !important;
+    }
+
+    /* Scale down icons on tablet/mobile */
+    .services-team-section div[style*="width: 45px"],
+    .services-programs-section div[style*="width: 45px"] {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 17px !important;
+    }
+
+    /* Increase tiny text for readability */
+    .services-specialties-grid > div {
+        font-size: 0.85rem !important;
+    }
+
+    .services-benefits-grid > div {
+        font-size: 0.85rem !important;
+    }
+
     /* Services Section - Single column for specialties/benefits on mobile */
     .services-team-section .services-specialties-grid,
     .services-programs-section .services-benefits-grid {
@@ -6995,6 +7041,11 @@ body {
     padding: 30px 0 !important;
   }
 
+  /* Services Section - Further reduce padding on small phones */
+  .services {
+    padding: 30px 0 40px 0 !important;
+  }
+
   /* Services sections mobile optimization */
   .services-team-section,
   .services-programs-section {
@@ -7002,9 +7053,23 @@ body {
     height: auto !important;
   }
 
+  .services-team-section > div:first-child,
+  .services-programs-section > div:first-child {
+    min-height: 50px !important;
+    padding: 12px !important;
+  }
+
   .services-team-section > div:last-child,
   .services-programs-section > div:last-child {
-    max-height: 400px !important;
+    max-height: none !important;
+  }
+
+  /* Further scale down icons on small phones */
+  .services-team-section div[style*="width"],
+  .services-programs-section div[style*="width"] {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 16px !important;
   }
 
   /* Services grid mobile layout - stack on mobile */
@@ -7712,6 +7777,43 @@ body {
   
   .service-card {
     margin: 0 8px;
+  }
+
+  /* Services Section - Extra Small Phones */
+  .services {
+    padding: 20px 0 30px 0 !important;
+  }
+
+  /* Main title even smaller for tiny phones */
+  .services h2 {
+    font-size: 1.5rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Reduce card padding for extra small screens */
+  .services-team-section > div:last-child,
+  .services-programs-section > div:last-child {
+    padding: 12px !important;
+  }
+
+  /* Compact icons for tiny phones */
+  .services-team-section div[style*="width"],
+  .services-programs-section div[style*="width"] {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 14px !important;
+  }
+
+  /* Ensure readable text on tiny phones */
+  .services-specialties-grid > div,
+  .services-benefits-grid > div {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Reduce card gaps for extra small screens */
+  .services-main-grid {
+    gap: 12px !important;
   }
 }
 

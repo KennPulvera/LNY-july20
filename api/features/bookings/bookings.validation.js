@@ -38,6 +38,7 @@ exports.validateBooking = [
     .isIn([
       'naga-blumentritt', 'naga-delrosario', 'legazpi', 'daet', 'guinobatan',
       'polangui', 'daraga', 'tabaco', 'sorsogon', 'iriga', 'catanduanes',
+      'masbate', 'irosin', // New branches
       'blumentritt', 'delrosario' // Legacy values
     ]).withMessage('Invalid branch location'),
 

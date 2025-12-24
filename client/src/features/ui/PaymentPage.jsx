@@ -424,11 +424,11 @@ const PaymentPage = () => {
                           <li>
                             <span style={{ fontWeight: 'bold' }}>Option 1: Scan QR Code</span>
                             <div className="qr-code-section-compact">
-                              <div className="qr-code-wrapper">
-                                <img 
-                                  src={selectedMethod === 'gcash' ? '/images/gcash-payment.jpg' : '/images/maya-payment.jpg'} 
+                              <div className="qr-code-wrapper responsive-qr">
+                                <img
+                                  src={selectedMethod === 'gcash' ? '/images/gcash-payment.jpg' : '/images/maya-payment.jpg'}
                                   alt={`${selectedMethod === 'gcash' ? 'GCash' : 'Maya'} QR Code`}
-                                  style={{ width: '300px', height: '300px', objectFit: 'contain' }}
+                                  style={{ width: '100%', maxWidth: '300px', height: 'auto', objectFit: 'contain' }}
                                 />
                               </div>
                               <div className="payment-amount-compact">

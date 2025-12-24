@@ -125,6 +125,32 @@ const OtherBranchesSection = () => {
       status: "open",
       hours: "8:00 AM - 8:00 PM",
       icon: "fa-map-marker-alt"
+    },
+    {
+      id: 11,
+      name: "Masbate Branch",
+      city: "Masbate City",
+      shortAddress: "2nd floor Purok 6 Brgy. Bagumbayan ext.",
+      fullAddress: "2nd floor Purok 6 Baranggay Bagumbayan extension Masbate City",
+      phone: "09937568998",
+      email: "",
+      distance: "",
+      status: "open",
+      hours: "Mon-Sat: 8:00 AM - 5:00 PM",
+      icon: "fa-building"
+    },
+    {
+      id: 12,
+      name: "Irosin Branch",
+      city: "Irosin, Sorsogon",
+      shortAddress: "ML Quezon St. San Julian",
+      fullAddress: "ML QUEZON ST. SAN JULIAN IROSIN SORSOGON",
+      phone: "09938467659",
+      email: "",
+      distance: "",
+      status: "open",
+      hours: "Mon-Sat: 8:00 AM - 5:00 PM",
+      icon: "fa-building"
     }
   ], []);
 

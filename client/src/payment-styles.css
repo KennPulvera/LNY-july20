@@ -2092,13 +2092,16 @@
 }
 
 .qr-code-section-compact .qr-code-wrapper {
-    width: 340px;
-    height: 340px;
+    width: 100%;
+    max-width: 340px;
+    height: auto;
     margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
     padding: 1rem;
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-radius: 16px;
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.1),
         0 0 0 3px rgba(255, 107, 53, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -2108,8 +2111,9 @@
 }
 
 .qr-code-section-compact .qr-code-wrapper img {
-    width: 300px;
-    height: 300px;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
     display: block;
     margin: 0 auto;
 }
@@ -3543,10 +3547,16 @@
 /* Android-specific payment small screen optimizations */
 @media screen and (max-width: 480px) {
   /* Android very small screen improvements */
-  .qr-code-container img {
+  .qr-code-container img,
+  .qr-code-section-compact .qr-code-wrapper img {
     /* Ensure QR codes remain scannable on small Android screens */
-    min-width: 160px;
-    min-height: 160px;
+    min-width: 200px;
+    max-width: 90%;
+  }
+
+  .qr-code-section-compact .qr-code-wrapper {
+    padding: 0.75rem;
+    max-width: 100%;
   }
   
   /* Android small screen performance */

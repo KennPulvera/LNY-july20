@@ -297,6 +297,8 @@ const BookingModal = ({ isOpen, onClose, onSubmit, user }) => {
                   <option value="sorsogon">Sorsogon Branch</option>
                   <option value="iriga">Iriga Branch</option>
                   <option value="catanduanes">Catanduanes Branch</option>
+                  <option value="masbate">Masbate Branch</option>
+                  <option value="irosin">Irosin Branch</option>
                 </select>
               </div>
             </div>

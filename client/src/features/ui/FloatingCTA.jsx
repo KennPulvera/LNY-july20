@@ -14,9 +14,9 @@ const FloatingCTA = ({ onBookClick }) => {
   }, []);
 
   return (
-    <div style={{
+    <div className="floating-cta-container" style={{
       position: 'fixed',
-      bottom: isVisible ? '20px' : '-40px',
+      bottom: isVisible ? '20px' : '-60px',
       left: '50%',
       transform: 'translateX(-50%)',
       transition: 'all 0.3s ease-in-out',
@@ -24,24 +24,24 @@ const FloatingCTA = ({ onBookClick }) => {
       pointerEvents: isVisible ? 'auto' : 'none'
     }}>
       <button
+        className="floating-cta-button"
         onClick={onBookClick}
         style={{
           background: 'linear-gradient(135deg, #ff6b35, #ff8a65)',
           color: 'white',
-          border: 'none',
-          borderRadius: '20px',
-          padding: '6px 16px',
-          fontSize: '0.85rem',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '24px',
+          padding: '12px 20px',
+          fontSize: '0.95rem',
           fontWeight: '700',
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
+          gap: '8px',
           whiteSpace: 'nowrap',
-          height: '28px',
-          boxShadow: '0 3px 15px rgba(255, 107, 53, 0.4)',
-          border: '1px solid rgba(255, 255, 255, 0.3)'
+          minHeight: '48px',
+          boxShadow: '0 3px 15px rgba(255, 107, 53, 0.4)'
         }}
         onMouseEnter={(e) => {
           e.target.style.background = 'linear-gradient(135deg, #ff8a65, #ffab40)';
@@ -54,7 +54,7 @@ const FloatingCTA = ({ onBookClick }) => {
           e.target.style.boxShadow = '0 3px 15px rgba(255, 107, 53, 0.4)';
         }}
       >
-        <span style={{ fontSize: '0.9rem' }}>📅</span>
+        <span style={{ fontSize: '1.1rem' }}>📅</span>
         <span>Schedule Assessment</span>
       </button>
     </div>

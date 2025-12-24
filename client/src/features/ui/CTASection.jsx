@@ -2,7 +2,7 @@ import React from 'react';
 
 const FloatingCTA = ({ onBookClick }) => {
   return (
-    <div className="floating-cta-container" style={{
+    <div className="cta-bottom-bar" style={{
       position: 'fixed',
       bottom: '0',
       left: '0',
@@ -119,10 +119,23 @@ const FloatingCTA = ({ onBookClick }) => {
           }
           
           @media (max-width: 768px) {
-            .floating-cta-container {
+            .cta-left-content {
               flex-direction: column !important;
-              gap: 15px !important;
+              gap: 10px !important;
               text-align: center !important;
+              align-items: center !important;
+            }
+
+            .cta-features {
+              flex-direction: column !important;
+              gap: 8px !important;
+            }
+          }
+
+          @media (max-width: 600px) {
+            /* Hide CTA bottom bar on small mobile to avoid conflicts with FloatingCTA */
+            .cta-bottom-bar {
+              display: none !important;
             }
           }
         `}

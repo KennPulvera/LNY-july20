@@ -110,7 +110,7 @@ const SimpleSlider = ({
           margin: '0 auto',
           position: 'relative'
         }}>
-          <div style={{
+          <div className="slider-wrapper" style={{
             background: 'linear-gradient(135deg, #ffffff, #f8f9fa)',
             borderRadius: '30px',
             padding: '20px',
@@ -121,7 +121,7 @@ const SimpleSlider = ({
             overflow: 'hidden'
           }}>
             {/* Decorative Corner Elements */}
-            <div style={{
+            <div className="decorative-corner" style={{
               position: 'absolute',
               top: '15px',
               left: '15px',
@@ -129,9 +129,10 @@ const SimpleSlider = ({
               height: '30px',
               background: 'linear-gradient(135deg, var(--primary-orange), #ff8a65)',
               borderRadius: '50%',
-              opacity: '0.8'
+              opacity: '0.8',
+              zIndex: 0
             }}></div>
-            <div style={{
+            <div className="decorative-corner" style={{
               position: 'absolute',
               top: '15px',
               right: '15px',
@@ -139,9 +140,10 @@ const SimpleSlider = ({
               height: '25px',
               background: 'linear-gradient(135deg, #2196f3, #64b5f6)',
               borderRadius: '50%',
-              opacity: '0.8'
+              opacity: '0.8',
+              zIndex: 0
             }}></div>
-            <div style={{
+            <div className="decorative-corner" style={{
               position: 'absolute',
               bottom: '15px',
               left: '15px',
@@ -149,9 +151,10 @@ const SimpleSlider = ({
               height: '20px',
               background: 'linear-gradient(135deg, #4caf50, #81c784)',
               borderRadius: '50%',
-              opacity: '0.8'
+              opacity: '0.8',
+              zIndex: 0
             }}></div>
-            <div style={{
+            <div className="decorative-corner" style={{
               position: 'absolute',
               bottom: '15px',
               right: '15px',
@@ -159,7 +162,8 @@ const SimpleSlider = ({
               height: '35px',
               background: 'linear-gradient(135deg, #ff6b35, #ffa726)',
               borderRadius: '50%',
-              opacity: '0.6'
+              opacity: '0.6',
+              zIndex: 0
             }}></div>
 
             <div style={{
@@ -167,7 +171,8 @@ const SimpleSlider = ({
               overflow: 'hidden',
               height: height,
               position: 'relative',
-              background: '#000'
+              background: '#000',
+              zIndex: 1
             }}>
               <style>
                 {`

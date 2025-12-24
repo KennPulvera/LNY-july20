@@ -108,6 +108,8 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
       'sorsogon': 'Sorsogon Branch',
       'iriga': 'Iriga Branch',
       'catanduanes': 'Catanduanes Branch',
+      'masbate': 'Masbate Branch',
+      'irosin': 'Irosin Branch',
       // Legacy values
       'blumentritt': 'Main Branch (Blumentritt)',
       'delrosario': 'Satellite Branch (Del Rosario)'

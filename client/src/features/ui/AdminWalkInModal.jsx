@@ -39,7 +39,9 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
   // Branch locations
   const branchLocations = [
     'blumentritt',
-    'delrosario'
+    'delrosario',
+    'masbate',
+    'irosin'
   ];
 
   // Relation options

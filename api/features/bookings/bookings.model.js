@@ -67,6 +67,8 @@ const bookingSchema = new mongoose.Schema({
       'sorsogon',
       'iriga',
       'catanduanes',
+      'masbate',
+      'irosin',
       // Legacy values for backward compatibility
       'blumentritt',
       'delrosario'

@@ -848,6 +848,8 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
                   <option value="sorsogon">Sorsogon Branch</option>
                   <option value="iriga">Iriga Branch</option>
                   <option value="catanduanes">Catanduanes Branch</option>
+                  <option value="masbate">Masbate Branch</option>
+                  <option value="irosin">Irosin Branch</option>
                   {/* Legacy branch values for backward compatibility */}
                   <option value="blumentritt">Legacy: Blumentritt (old bookings)</option>
                   <option value="delrosario">Legacy: Del Rosario (old bookings)</option>

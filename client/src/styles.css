@@ -5175,6 +5175,27 @@ body {
     }
 }
 
+.remember-me-group {
+    margin-bottom: 8px;
+}
+
+.remember-me-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #555;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.remember-me-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--primary-color, #ff6b35);
+}
+
 .magic-auth-btn {
     width: 100%;
     background: var(--rainbow-gradient);

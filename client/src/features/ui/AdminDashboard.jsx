@@ -68,8 +68,8 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
 
   useEffect(() => {
     // Check if user is already logged in as admin from main auth system
-    const userData = localStorage.getItem('userData');
-    const userToken = localStorage.getItem('userToken');
+    const userData = localStorage.getItem('userData') || sessionStorage.getItem('userData');
+    const userToken = localStorage.getItem('userToken') || sessionStorage.getItem('userToken');
     
     if (userData && userToken) {
       try {
@@ -240,6 +240,8 @@ const AdminDashboard = ({ initialServiceTypeFilter = 'all', isOnlinePage = false
     localStorage.removeItem('adminAuth');
     localStorage.removeItem('userData');
     localStorage.removeItem('userToken');
+    sessionStorage.removeItem('userData');
+    sessionStorage.removeItem('userToken');
     setIsAuthenticated(false);
     navigate('/'); // Redirect to main page
   }, [navigate]);

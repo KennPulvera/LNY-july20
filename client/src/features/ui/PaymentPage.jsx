@@ -137,7 +137,7 @@ const PaymentPage = () => {
       }
 
       // Update the booking in the database with payment information
-      const token = localStorage.getItem('userToken');
+      const token = localStorage.getItem('userToken') || sessionStorage.getItem('userToken');
       const response = await axios.patch(
         `${API_BASE_URL}/api/bookings/${bookingData.bookingId}/payment`, 
         paymentUpdateData,

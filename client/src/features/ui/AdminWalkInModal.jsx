@@ -58,7 +58,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/admin/professionals`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('userToken')}`
+          Authorization: `Bearer ${localStorage.getItem('userToken') || sessionStorage.getItem('userToken')}`
         }
       });
       setProfessionals(response.data);
@@ -97,7 +97,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
         `${API_BASE_URL}/api/bookings/availability/${formData.appointmentDate}?branch=${encodeURIComponent(branch)}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('userToken')}`
+            Authorization: `Bearer ${localStorage.getItem('userToken') || sessionStorage.getItem('userToken')}`
           }
         }
       );
@@ -156,7 +156,7 @@ const AdminWalkInModal = ({ isOpen, onClose, onSuccess, selectedBranch }) => {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('userToken')}`
+            Authorization: `Bearer ${localStorage.getItem('userToken') || sessionStorage.getItem('userToken')}`
           }
         }
       );

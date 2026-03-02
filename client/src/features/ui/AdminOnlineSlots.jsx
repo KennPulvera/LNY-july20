@@ -43,8 +43,8 @@ const AdminOnlineSlots = () => {
   }, []);
 
   useEffect(() => {
-    const userData = localStorage.getItem('userData');
-    const userToken = localStorage.getItem('userToken');
+    const userData = localStorage.getItem('userData') || sessionStorage.getItem('userData');
+    const userToken = localStorage.getItem('userToken') || sessionStorage.getItem('userToken');
     if (userData && userToken) {
       try {
         const user = JSON.parse(userData);

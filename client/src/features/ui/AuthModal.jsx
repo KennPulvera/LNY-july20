@@ -9,6 +9,7 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
     password: '',
     confirmPassword: ''
   });
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -44,9 +45,10 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
       const response = await axios.post(`${API_BASE_URL}${endpoint}`, formData);
 
       if (response.data.success) {
-        // Store user data in localStorage
-        localStorage.setItem('userToken', response.data.token);
-        localStorage.setItem('userData', JSON.stringify(response.data.user));
+        // Store user data based on Remember Me choice
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem('userToken', response.data.token);
+        storage.setItem('userData', JSON.stringify(response.data.user));
         
         onAuthSuccess(response.data.user);
         onClose();
@@ -151,6 +153,19 @@ const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
                     placeholder="Confirm your password"
                     minLength="6"
                   />
+                </div>
+              )}
+
+              {isLogin && (
+                <div className="form-group remember-me-group">
+                  <label className="remember-me-label">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                    Remember me
+                  </label>
                 </div>
               )}
 

@@ -27,7 +27,7 @@ const OtherBranchesSection = () => {
       phone: "639934371193",
       distance: "5.2 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
@@ -39,7 +39,7 @@ const OtherBranchesSection = () => {
       phone: "0992-4460-263",
       distance: "12.8 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
@@ -51,7 +51,7 @@ const OtherBranchesSection = () => {
       phone: "09456970557",
       distance: "8.5 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
@@ -63,7 +63,7 @@ const OtherBranchesSection = () => {
       phone: "09912306541",
       distance: "15.3 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
@@ -75,7 +75,7 @@ const OtherBranchesSection = () => {
       phone: "09910716065",
       distance: "6.7 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
@@ -87,7 +87,7 @@ const OtherBranchesSection = () => {
       phone: "09912614563",
       distance: "22.1 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
@@ -99,7 +99,7 @@ const OtherBranchesSection = () => {
       phone: "09922593967",
       distance: "45.2 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
@@ -111,7 +111,7 @@ const OtherBranchesSection = () => {
       phone: "09770279122",
       distance: "18.9 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
@@ -123,7 +123,7 @@ const OtherBranchesSection = () => {
       phone: "09285744003",
       distance: "85.4 km",
       status: "open",
-      hours: "8:00 AM - 8:00 PM",
+      hours: "8:00 AM - 5:00 PM",
       icon: "fa-map-marker-alt"
     },
     {
